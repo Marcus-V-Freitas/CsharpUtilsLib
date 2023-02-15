@@ -14,9 +14,9 @@
 
 > Validate Brazilian documents and ohers things:
   >- IsValidEmail
-  >- ValidateEAN
-  >- IsCNPJ
-  >- IsCPF
+  >- IsValidEAN
+  >- IsValidCNPJ
+  >- IsValidCPF
   >- IsValidPis
   >- IsValidVoterIDCard (Título de Eleitor)
   
@@ -61,6 +61,7 @@
   >- IsBetweenDates
   >- GetNextWeekday
   >- GetWeekdayCount
+  >- ConvertToDatetime
 
 ---
 
@@ -138,7 +139,6 @@
   >- GetUniqueKey
   >- RemoveDocumentMask
   >- ToTitleCase
-  >- ConvertToDatetime
   >- SpecificSplit
   >- Count 
   >- OnlyNumbers
