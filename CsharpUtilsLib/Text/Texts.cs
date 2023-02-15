@@ -207,23 +207,6 @@ public static class Texts
         return CultureInfo.InvariantCulture.TextInfo.ToTitleCase(input.ToLower());
     }
 
-    public static DateTime ConvertToDatetime(this string value, string format = "dd/MM/yyyy", string culture = "", DateTime defaultValue = default)
-    {
-        CultureInfo cultureInfo = CultureInfo.InvariantCulture;
-
-        if (!string.IsNullOrEmpty(culture))
-        {
-            cultureInfo = CultureInfo.GetCultureInfo(culture);
-        }
-
-        if (DateTime.TryParseExact(value, format, cultureInfo, DateTimeStyles.AllowWhiteSpaces, out DateTime date))
-        {
-            return date;
-        }
-        return defaultValue;
-    }
-
-
     public static string[] SpecificSplit(this string value, char delimiter, int maxSplit = 0)
     {
         if (string.IsNullOrEmpty(value))

@@ -2,6 +2,22 @@ namespace CsharpUtilsLib.Date;
 
 public static class Dates
 {
+    public static DateTime ConvertToDatetime(this string value, string format = "dd/MM/yyyy", string culture = "", DateTime defaultValue = default)
+    {
+        CultureInfo cultureInfo = CultureInfo.InvariantCulture;
+
+        if (!string.IsNullOrEmpty(culture))
+        {
+            cultureInfo = CultureInfo.GetCultureInfo(culture);
+        }
+
+        if (DateTime.TryParseExact(value, format, cultureInfo, DateTimeStyles.AllowWhiteSpaces, out DateTime date))
+        {
+            return date;
+        }
+        return defaultValue;
+    }
+
     public static IEnumerable<DateTime> GetAllYearDates(int year)
     {
         List<DateTime> dates = new();

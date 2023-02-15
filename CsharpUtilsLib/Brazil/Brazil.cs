@@ -59,7 +59,7 @@ public static class Brazil
         }
     }
 
-    public static bool ValidateEAN(string input)
+    public static bool IsValidEAN(string input)
     {
         if (string.IsNullOrEmpty(input) || input.Length != 13 && input.Length != 14)
         {
@@ -85,7 +85,7 @@ public static class Brazil
         return checksum == int.Parse(input[^1].ToString());
     }
 
-    public static bool IsCNPJ(string cnpj)
+    public static bool IsValidCNPJ(string cnpj)
     {
         try
         {
@@ -136,7 +136,7 @@ public static class Brazil
         }
     }
 
-    public static bool IsCPF(string cpf)
+    public static bool IsValidCPF(string cpf)
     {
         try
         {
