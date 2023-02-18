@@ -16,6 +16,11 @@ public static class Brazil
 
     public static string FormatCPF(string input)
     {
+        if (string.IsNullOrEmpty(input))
+        {
+            return null!;
+        }
+
         input = input.Trim();
         input = input.PadLeft(11, '0');
         return input.Substring(0, 3) + "." + input.Substring(3, 3) + "." + input.Substring(6, 3) + "-" + input.Substring(9, 2);
@@ -46,43 +51,82 @@ public static class Brazil
             input.Substring(6));
     }
 
-    public static bool IsValidEmail(string email)
+    public static string FormatCEP(string input)
     {
-        try
+        if (string.IsNullOrEmpty(input))
         {
-            var addr = new MailAddress(email);
-            return addr.Address == email;
+            return null!;
         }
-        catch
-        {
-            return false;
-        }
+
+        return string.Format("{0}-{1}", input[..5],
+                                        input.Substring(5, 3));
     }
 
-    public static bool IsValidEAN(string input)
+    public static string FormatNCM(string input)
     {
-        if (string.IsNullOrEmpty(input) || input.Length != 13 && input.Length != 14)
+        if (string.IsNullOrEmpty(input))
+        {
+            return null!;
+        }
+
+        string ncmWithoutSpace = Texts.RemoveDocumentMask(input);
+
+        if (ncmWithoutSpace.Length != 8)
+        {
+            return null!;
+        }
+
+        string ncm = ncmWithoutSpace.Insert(4, ".").Insert(7, ".");
+
+        return ncm;
+    }
+
+    public static string FormatFIPECode(string input)
+    {
+        if (string.IsNullOrEmpty(input))
+        {
+            return null!;
+        }
+
+        string fipeCodeWithoutMask = Texts.RemoveDocumentMask(input);
+
+        if (fipeCodeWithoutMask.Length != 7)
+        {
+            return null!;
+        }
+
+        string codeWithoutDigit = fipeCodeWithoutMask[..6];
+        string digit = fipeCodeWithoutMask.Substring(6, 1);
+
+        return $"{codeWithoutDigit}-{digit}";
+    }
+
+    public static bool IsValidCep(string input)
+    {
+        if (string.IsNullOrEmpty(input))
         {
             return false;
         }
 
-        int sum = 0;
-        for (int i = 0; i < input.Length - 1; i += 2)
+        input = input.OnlyNumbers();
+
+        // Verifica se o CEP tem 8 dígitos
+        if (input.Length != 8)
         {
-            sum += int.Parse(input[i].ToString());
-        }
-        for (int i = 1; i < input.Length - 1; i += 2)
-        {
-            sum += 3 * int.Parse(input[i].ToString());
+            return false;
         }
 
-        int checksum = 10 - (sum % 10);
-        if (checksum == 10)
+        if (!Regex.IsMatch(input[..1], "[0-3]", RegexOptions.Compiled))
         {
-            checksum = 0;
+            return false;
         }
 
-        return checksum == int.Parse(input[^1].ToString());
+        if (!Regex.IsMatch(input.Substring(1, 1), "[0-1]", RegexOptions.Compiled))
+        {
+            return false;
+        }
+
+        return true;
     }
 
     public static bool IsValidCNPJ(string cnpj)

@@ -85,17 +85,31 @@ public static class Collections
 
     public static void AddOrChangeValue<TKey, TValue>(this IDictionary<TKey, TValue> source, TKey key, TValue value)
     {
-        if (source != null && key != null && value != null)
+        if (source == null || key == null || value == null)
         {
-            if (source.ContainsKey(key))
-            {
-                source[key] = value;
-            }
-            else
-            {
-                source.AddIfNotNull(key, value);
-            }
+            return;
         }
+
+        if (source.ContainsKey(key))
+        {
+            source[key] = value;
+        }
+        else
+        {
+            source.AddIfNotNull(key, value);
+        }
+    }
+
+    public static void AddOrChangeValueByIndex<TKey, TValue>(this IDictionary<TKey, TValue> source, TValue value, int index)
+    {
+        if (index < 0 || source == null || source.Count <= index)
+        {
+            return;
+        }
+
+        TKey key = source.Keys.ElementAt(index);
+
+        source.AddOrChangeValue(key, value);
     }
 
     public static bool KeyValueIsNull<TKey, TValue>(this KeyValuePair<TKey, TValue> source)

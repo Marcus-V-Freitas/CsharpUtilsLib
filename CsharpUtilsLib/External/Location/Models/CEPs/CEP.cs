@@ -1,4 +1,4 @@
-namespace CsharpUtilsLib.External.Location;
+namespace CsharpUtilsLib.External.Location.Models.CEPs;
 
 public sealed class CEP
 {

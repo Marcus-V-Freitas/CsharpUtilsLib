@@ -18,12 +18,20 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="External\Location\Models\Countries\CountryFlags.cs~RF24a6e906.TMP" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Folder Include="Collection\" />
 		<Folder Include="Date\" />
 		<Folder Include="EnumType\" />
 		<Folder Include="Extensions\" />
-		<Folder Include="External\Location\" />
+		<Folder Include="External\FIPEs\Models\" />
+		<Folder Include="External\NCMs\Models\" />
+		<Folder Include="External\Taxs\Models\" />
+		<Folder Include="Global\" />
 		<Folder Include="Numeric\" />
+		<Folder Include="SystemResources\" />
 		<Folder Include="Text\" />
 		<Folder Include="Web\Html\" />
 		<Folder Include="Http\" />

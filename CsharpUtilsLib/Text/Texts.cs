@@ -192,7 +192,7 @@ public static class Texts
         }
 
         document = document.Trim();
-        document = document.Replace(".", "").Replace("-", "").Replace(" ", "");
+        document = document.Replace(".", "").Replace("-", "").Replace(" ", "").Replace("/","");
 
         return document;
     }

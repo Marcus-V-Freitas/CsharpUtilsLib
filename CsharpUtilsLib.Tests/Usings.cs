@@ -1,0 +1,11 @@
+global using Xunit;
+global using CsharpUtilsLib.External.Location;
+global using CsharpUtilsLib.External.Location.Models.Countries.Enums;
+global using CsharpUtilsLib.External.Translate;
+global using CsharpUtilsLib.External.IPs;
+global using CsharpUtilsLib.External.Taxs;
+global using CsharpUtilsLib.External.Companies;
+global using CsharpUtilsLib.External.NCMs;
+global using CsharpUtilsLib.External.FIPEs;
+global using CsharpUtilsLib.External.NationalBrazilHolidays;
+global using CsharpUtilsLib.SystemResources;
