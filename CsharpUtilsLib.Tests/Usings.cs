@@ -9,3 +9,5 @@ global using CsharpUtilsLib.External.NCMs;
 global using CsharpUtilsLib.External.FIPEs;
 global using CsharpUtilsLib.External.NationalBrazilHolidays;
 global using CsharpUtilsLib.SystemResources;
+global using CsharpUtilsLib.Validations.Brazil;
+global using CsharpUtilsLib.Brazil.CNJ;

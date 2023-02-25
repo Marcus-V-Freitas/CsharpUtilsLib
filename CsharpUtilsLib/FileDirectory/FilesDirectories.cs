@@ -69,8 +69,6 @@ public static class FilesDirectories
                 doc.DocumentNode.SelectSingleNode("html") != null;
     }
 
-
-
     public static void CreateDirectoryIfNotExists(string path)
     {
         if (!Directory.Exists(path))
@@ -103,5 +101,87 @@ public static class FilesDirectories
         var fullPath = Path.Combine(currentDir, path);
 
         CreateDirectoryIfNotExists(fullPath);
+    }
+
+    public static long GetDirectorySizeContent(string directoryPath)
+    {
+        DirectoryInfo directory = new DirectoryInfo(directoryPath);
+
+        long size = 0;
+
+        foreach (FileInfo file in directory.GetFiles())
+        {
+            size += file.Length;
+        }
+
+        foreach (DirectoryInfo subDirectory in directory.GetDirectories())
+        {
+            size += GetDirectorySizeContent(subDirectory.FullName);
+        }
+
+        return size;
+    }
+
+    public static void RenameFile(string filePath, string newName)
+    {
+        string newFilePath = Path.Combine(Path.GetDirectoryName(filePath)!, newName);
+        File.Move(filePath, newFilePath);
+    }
+
+    public static void ClearDirectoryContent(string directoryPath)
+    {
+        DirectoryInfo directory = new DirectoryInfo(directoryPath);
+
+        foreach (FileInfo file in directory.GetFiles())
+        {
+            file.Delete();
+        }
+
+        foreach (DirectoryInfo subDirectory in directory.GetDirectories())
+        {
+            subDirectory.Delete(true);
+        }
+    }
+
+    public static void CopyDirectoryContent(string sourceDirectory, string targetDirectory)
+    {
+        CreateDirectoryIfNotExists(targetDirectory);
+
+        foreach (string file in Directory.GetFiles(sourceDirectory))
+        {
+            string fileName = Path.GetFileName(file);
+            string destFile = Path.Combine(targetDirectory, fileName);
+            File.Copy(file, destFile, true);
+        }
+
+        foreach (string subDirectory in Directory.GetDirectories(sourceDirectory))
+        {
+            string name = Path.GetFileName(subDirectory);
+            string destDirectory = Path.Combine(targetDirectory, name);
+            CopyDirectoryContent(subDirectory, destDirectory);
+        }
+    }
+
+    public static void CreateTextFileWithContent(string directoryPath, string fileName, string fileContent)
+    {
+        string filePath = Path.Combine(directoryPath, fileName);
+        using (var writer = new StreamWriter(filePath))
+        {
+            writer.Write(fileContent);
+        }
+    }
+
+    public static void MergeFiles(string[] fileNames, string outputFileName)
+    {
+        using (var output = File.Create(outputFileName))
+        {
+            foreach (string file in fileNames)
+            {
+                using (var input = File.OpenRead(file))
+                {
+                    input.CopyTo(output);
+                }
+            }
+        }
     }
 }

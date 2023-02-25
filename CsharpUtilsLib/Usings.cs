@@ -35,3 +35,4 @@ global using CsharpUtilsLib.External.NationalBrazilHolidays.Models;
 global using Microsoft.AspNetCore.WebUtilities;
 global using Microsoft.Extensions.Primitives;
 global using CsharpUtilsLib.SystemResources;
+global using CsharpUtilsLib.Brazil.CNJ;
