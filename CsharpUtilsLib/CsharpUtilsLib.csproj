@@ -6,19 +6,19 @@
 		<Nullable>enable</Nullable>
 		<id>CsharpUtilsLib</id>
 		<PackageIcon>icon.png</PackageIcon>
-		<version>1.0.1</version>
+		<version>1.0.2</version>
 		<authors>Marcus-V-Freitas</authors>
 		<owners>Marcus-V-Freitas</owners>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		<projectUrl>https://github.com/Marcus-V-Freitas/CsharpUtilsLib</projectUrl>
 		<RepositoryUrl>https://github.com/Marcus-V-Freitas/CsharpUtilsLib</RepositoryUrl>
 		<description>Lib containing numerous functions to simplify the day to day development</description>
-		<copyright>Copyright 2022</copyright>
-		<FileVersion>1.0.1.0</FileVersion>
+		<copyright>Copyright 2023</copyright>
+		<FileVersion>1.0.2.0</FileVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="External\Location\Models\Countries\CountryFlags.cs~RF24a6e906.TMP" />
+		<None Remove="External\Location\Models\Countries\CountryFlags.cs~RF24a6e906.TMP" />
 	</ItemGroup>
 
 	<ItemGroup>
