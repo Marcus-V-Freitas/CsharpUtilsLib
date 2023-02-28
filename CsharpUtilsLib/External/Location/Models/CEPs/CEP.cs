@@ -2,33 +2,33 @@ namespace CsharpUtilsLib.External.Location.Models.CEPs;
 
 public sealed class CEP
 {
-    [JsonPropertyName("cep")]
+    [Display(Name = "CEP"), JsonPropertyName("cep")]
     public string Cep { get; set; }
 
-    [JsonPropertyName("logradouro")]
+    [Display(Name = "Logradouro"), JsonPropertyName("logradouro")]
     public string Logradouro { get; set; }
 
-    [JsonPropertyName("complemento")]
+    [Display(Name = "Complemento"), JsonPropertyName("complemento")]
     public string Complemento { get; set; }
 
-    [JsonPropertyName("bairro")]
+    [Display(Name = "Bairro"), JsonPropertyName("bairro")]
     public string Bairro { get; set; }
 
-    [JsonPropertyName("localidade")]
+    [Display(Name = "Localidade"), JsonPropertyName("localidade")]
     public string Localidade { get; set; }
 
-    [JsonPropertyName("uf")]
+    [Display(Name = "UF"), JsonPropertyName("uf")]
     public string Uf { get; set; }
 
-    [JsonPropertyName("ibge")]
+    [Display(Name = "IBGE"), JsonPropertyName("ibge")]
     public string Ibge { get; set; }
 
-    [JsonPropertyName("gia")]
+    [Display(Name = "GIA"), JsonPropertyName("gia")]
     public string Gia { get; set; }
 
-    [JsonPropertyName("ddd")]
+    [Display(Name = "DDD"), JsonPropertyName("ddd")]
     public string Ddd { get; set; }
 
-    [JsonPropertyName("siafi")]
+    [Display(Name = "SIAFI"), JsonPropertyName("siafi")]
     public string Siafi { get; set; }
 }

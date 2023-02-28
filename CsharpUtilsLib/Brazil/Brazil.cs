@@ -134,16 +134,16 @@ public static class Brazil
         try
         {
             if (string.IsNullOrEmpty(cnpj))
-                return false;
-
-            if (cnpj.IsSequentialRepetition())
-                return false;
+                return false;           
 
             int[] multiple1 = new int[12] { 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
             int[] multiple2 = new int[13] { 6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
 
             cnpj = cnpj.Trim().Replace(".", "").Replace("-", "").Replace("/", "");
             if (cnpj.Length != 14)
+                return false;
+
+            if (cnpj.IsSequentialRepetition())
                 return false;
 
             string tempCnpj = cnpj[..12];
@@ -185,16 +185,16 @@ public static class Brazil
         try
         {
             if (string.IsNullOrEmpty(cpf))
-                return false;
-
-            if (cpf.IsSequentialRepetition())
-                return false;
+                return false;            
 
             int[] multiple1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
             int[] multiple2 = new int[10] { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
 
             cpf = cpf.Trim().Replace(".", "").Replace("-", "");
             if (cpf.Length != 11)
+                return false;
+
+            if (cpf.IsSequentialRepetition())
                 return false;
 
             for (int j = 0; j < 10; j++)

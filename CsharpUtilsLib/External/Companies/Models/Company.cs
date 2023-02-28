@@ -2,147 +2,147 @@ namespace CsharpUtilsLib.External.Companies.Models;
 
 public sealed class Company
 {
-    [JsonPropertyName("uf")]
+    [Display(Name = "UF"), JsonPropertyName("uf")]
     public string Uf { get; set; }
 
-    [JsonPropertyName("cep")]
+    [Display(Name = "CEP"), JsonPropertyName("cep")]
     public string Cep { get; set; }
 
-    [JsonPropertyName("qsa")]
+    [Display(Name = "QSA"), JsonPropertyName("qsa")]
     public List<CompanyQsa> Qsa { get; set; }
 
-    [JsonPropertyName("cnpj")]
+    [Display(Name = "CNPJ"), JsonPropertyName("cnpj")]
     public string Cnpj { get; set; }
 
-    [JsonPropertyName("pais")]
+    [Display(Name = "País"), JsonPropertyName("pais")]
     public string Pais { get; set; }
 
-    [JsonPropertyName("email")]
+    [Display(Name = "E-mail"), JsonPropertyName("email")]
     public string Email { get; set; }
 
-    [JsonPropertyName("porte")]
+    [Display(Name = "Porte"), JsonPropertyName("porte")]
     public string Porte { get; set; }
 
-    [JsonPropertyName("bairro")]
+    [Display(Name = "Bairro"), JsonPropertyName("bairro")]
     public string Bairro { get; set; }
 
-    [JsonPropertyName("numero")]
+    [Display(Name = "Número"), JsonPropertyName("numero")]
     public string Numero { get; set; }
 
-    [JsonPropertyName("ddd_fax")]
+    [Display(Name = "FAX"), JsonPropertyName("ddd_fax")]
     public string DddFax { get; set; }
 
-    [JsonPropertyName("municipio")]
+    [Display(Name = "Município"), JsonPropertyName("municipio")]
     public string Municipio { get; set; }
 
-    [JsonPropertyName("logradouro")]
+    [Display(Name = "Logradouro"), JsonPropertyName("logradouro")]
     public string Logradouro { get; set; }
 
-    [JsonPropertyName("cnae_fiscal")]
+    [Display(Name = "CNAE Fiscal"), JsonPropertyName("cnae_fiscal")]
     public int? CnaeFiscal { get; set; }
 
-    [JsonPropertyName("codigo_pais")]
+    [Display(Name = "Código do País"), JsonPropertyName("codigo_pais")]
     public string CodigoPais { get; set; }
 
-    [JsonPropertyName("complemento")]
+    [Display(Name = "Complemento"), JsonPropertyName("complemento")]
     public string Complemento { get; set; }
 
-    [JsonPropertyName("codigo_porte")]
+    [Display(Name = "UF"), JsonPropertyName("codigo_porte")]
     public int? CodigoPorte { get; set; }
 
-    [JsonPropertyName("razao_social")]
+    [Display(Name = "Razão Social"), JsonPropertyName("razao_social")]
     public string RazaoSocial { get; set; }
 
-    [JsonPropertyName("nome_fantasia")]
+    [Display(Name = "Nome Fantasia"), JsonPropertyName("nome_fantasia")]
     public string NomeFantasia { get; set; }
 
-    [JsonPropertyName("capital_social")]
+    [Display(Name = "Capital Social"), JsonPropertyName("capital_social")]
     public long CapitalSocial { get; set; }
 
-    [JsonPropertyName("ddd_telefone_1")]
+    [Display(Name = "Telefone 1"), JsonPropertyName("ddd_telefone_1")]
     public string DddTelefone1 { get; set; }
 
-    [JsonPropertyName("ddd_telefone_2")]
+    [Display(Name = "Telefone 2"), JsonPropertyName("ddd_telefone_2")]
     public string DddTelefone2 { get; set; }
 
-    [JsonPropertyName("opcao_pelo_mei")]
+    [Display(Name = "Opção pelo MEI"), JsonPropertyName("opcao_pelo_mei")]
     public bool? OpcaoPeloMei { get; set; }
 
-    [JsonPropertyName("descricao_porte")]
+    [Display(Name = "Descrição do Porte"), JsonPropertyName("descricao_porte")]
     public string DescricaoPorte { get; set; }
 
-    [JsonPropertyName("codigo_municipio")]
+    [Display(Name = "Código do Município"), JsonPropertyName("codigo_municipio")]
     public int? CodigoMunicipio { get; set; }
 
-    [JsonPropertyName("cnaes_secundarios")]
+    [Display(Name = "CNAE's Secundários"), JsonPropertyName("cnaes_secundarios")]
     public List<CompanySecondaryCnae> CnaesSecundarios { get; set; }
 
-    [JsonPropertyName("natureza_juridica")]
+    [Display(Name = "Natureza Jurídica"), JsonPropertyName("natureza_juridica")]
     public string NaturezaJuridica { get; set; }
 
-    [JsonPropertyName("situacao_especial")]
+    [Display(Name = "Situação Especial"), JsonPropertyName("situacao_especial")]
     public string SituacaoEspecial { get; set; }
 
-    [JsonPropertyName("opcao_pelo_simples")]
+    [Display(Name = "Opção pelo Simples"), JsonPropertyName("opcao_pelo_simples")]
     public bool? OpcaoPeloSimples { get; set; }
 
-    [JsonPropertyName("situacao_cadastral")]
+    [Display(Name = "Situação Cadastral"), JsonPropertyName("situacao_cadastral")]
     public int? SituacaoCadastral { get; set; }
 
-    [JsonPropertyName("data_opcao_pelo_mei")]
+    [Display(Name = "Data da Opção pelo MEI"), JsonPropertyName("data_opcao_pelo_mei")]
     public string DataOpcaoPeloMei { get; set; }
 
-    [JsonPropertyName("data_exclusao_do_mei")]
+    [Display(Name = "Data da Exclusão do MEI"), JsonPropertyName("data_exclusao_do_mei")]
     public string DataExclusaoDoMei { get; set; }
 
-    [JsonPropertyName("cnae_fiscal_descricao")]
+    [Display(Name = "CNAE FISCAL"), JsonPropertyName("cnae_fiscal_descricao")]
     public string CnaeFiscalDescricao { get; set; }
 
-    [JsonPropertyName("codigo_municipio_ibge")]
+    [Display(Name = "Código Município do IBGE"), JsonPropertyName("codigo_municipio_ibge")]
     public int? CodigoMunicipioIbge { get; set; }
 
-    [JsonPropertyName("data_inicio_atividade")]
+    [Display(Name = "Data de Início das Atividades"), JsonPropertyName("data_inicio_atividade")]
     public string DataInicioAtividade { get; set; }
 
-    [JsonPropertyName("data_situacao_especial")]
+    [Display(Name = "Data da Situação Especial"), JsonPropertyName("data_situacao_especial")]
     public string DataSituacaoEspecial { get; set; }
 
-    [JsonPropertyName("data_opcao_pelo_simples")]
+    [Display(Name = "Data da Opção pelo Simples"), JsonPropertyName("data_opcao_pelo_simples")]
     public string DataOpcaoPeloSimples { get; set; }
 
-    [JsonPropertyName("data_situacao_cadastral")]
+    [Display(Name = "Data da Situação Cadastral"), JsonPropertyName("data_situacao_cadastral")]
     public string DataSituacaoCadastral { get; set; }
 
-    [JsonPropertyName("nome_cidade_no_exterior")]
+    [Display(Name = "Nome da Cidade no Exterior"), JsonPropertyName("nome_cidade_no_exterior")]
     public string NomeCidadeNoExterior { get; set; }
 
-    [JsonPropertyName("codigo_natureza_juridica")]
+    [Display(Name = "Código da Natureza Jurídica"), JsonPropertyName("codigo_natureza_juridica")]
     public int? CodigoNaturezaJuridica { get; set; }
 
-    [JsonPropertyName("data_exclusao_do_simples")]
+    [Display(Name = "Data da Exclusão do Simples"), JsonPropertyName("data_exclusao_do_simples")]
     public string DataExclusaoDoSimples { get; set; }
 
-    [JsonPropertyName("motivo_situacao_cadastral")]
+    [Display(Name = "Motivo da Situação Cadastral"), JsonPropertyName("motivo_situacao_cadastral")]
     public int? MotivoSituacaoCadastral { get; set; }
 
-    [JsonPropertyName("ente_federativo_responsavel")]
+    [Display(Name = "Ente Federativo Responsável"), JsonPropertyName("ente_federativo_responsavel")]
     public string EnteFederativoResponsavel { get; set; }
 
-    [JsonPropertyName("identificador_matriz_filial")]
+    [Display(Name = "Identificador da Matriz/Filial"), JsonPropertyName("identificador_matriz_filial")]
     public int? IdentificadorMatrizFilial { get; set; }
 
-    [JsonPropertyName("qualificacao_do_responsavel")]
+    [Display(Name = "Qualificação do Responsável"), JsonPropertyName("qualificacao_do_responsavel")]
     public int? QualificacaoDoResponsavel { get; set; }
 
-    [JsonPropertyName("descricao_situacao_cadastral")]
+    [Display(Name = "Descrição da Situação Cadastral"), JsonPropertyName("descricao_situacao_cadastral")]
     public string DescricaoSituacaoCadastral { get; set; }
 
-    [JsonPropertyName("descricao_tipo_de_logradouro")]
+    [Display(Name = "Descrição do Tipo de Logradouro"), JsonPropertyName("descricao_tipo_de_logradouro")]
     public string DescricaoTipoDeLogradouro { get; set; }
 
-    [JsonPropertyName("descricao_motivo_situacao_cadastral")]
+    [Display(Name = "Descrição do Motivo da Situação Cadastral"), JsonPropertyName("descricao_motivo_situacao_cadastral")]
     public string DescricaoMotivoSituacaoCadastral { get; set; }
 
-    [JsonPropertyName("descricao_identificador_matriz_filial")]
+    [Display(Name = "Descrição Identificador da Matriz/Filial"), JsonPropertyName("descricao_identificador_matriz_filial")]
     public string DescricaoIdentificadorMatrizFilial { get; set; }
 }

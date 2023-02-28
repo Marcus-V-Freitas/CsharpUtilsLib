@@ -2,99 +2,99 @@ namespace CsharpUtilsLib.External.Location.Models.Countries;
 
 public sealed class Country
 {
-    [JsonPropertyName("name")]
+    [Display(Name = "Name"), JsonPropertyName("name")]
     public CountryName Name { get; set; }
 
-    [JsonPropertyName("tld")]
+    [Display(Name = "TLD"), JsonPropertyName("tld")]
     public List<string> Tld { get; set; }
 
-    [JsonPropertyName("cca2")]
+    [Display(Name = "CCA2"), JsonPropertyName("cca2")]
     public string CCA2 { get; set; }
 
-    [JsonPropertyName("ccn3")]
+    [Display(Name = "CCN3"), JsonPropertyName("ccn3")]
     public string CCN3 { get; set; }
 
-    [JsonPropertyName("cca3")]
+    [Display(Name = "CCA3"), JsonPropertyName("cca3")]
     public string CCA3 { get; set; }
 
-    [JsonPropertyName("cioc")]
+    [Display(Name = "CIOC"), JsonPropertyName("cioc")]
     public string CIOC { get; set; }
 
-    [JsonPropertyName("independent")]
+    [Display(Name = "Independent"), JsonPropertyName("independent")]
     public bool Independent { get; set; }
 
-    [JsonPropertyName("status")]
+    [Display(Name = "Status"), JsonPropertyName("status")]
     public string Status { get; set; }
 
-    [JsonPropertyName("unMember")]
+    [Display(Name = "Un Member"), JsonPropertyName("unMember")]
     public bool UnMember { get; set; }
 
-    [JsonPropertyName("currencies")]
+    [Display(Name = "Currencies"), JsonPropertyName("currencies")]
     public CountryCurrencies Currencies { get; set; }
 
-    [JsonPropertyName("idd")]
+    [Display(Name = "IDD"), JsonPropertyName("idd")]
     public CountryIdd Idd { get; set; }
 
-    [JsonPropertyName("capital")]
+    [Display(Name = "Capital"), JsonPropertyName("capital")]
     public List<string> Capital { get; set; }
 
-    [JsonPropertyName("altSpellings")]
+    [Display(Name = "ALT Spellings"), JsonPropertyName("altSpellings")]
     public List<string> AltSpellings { get; set; }
 
-    [JsonPropertyName("region")]
+    [Display(Name = "Region"), JsonPropertyName("region")]
     public string Region { get; set; }
 
-    [JsonPropertyName("subregion")]
+    [Display(Name = "Subregion"), JsonPropertyName("subregion")]
     public string Subregion { get; set; }
 
-    [JsonPropertyName("languages")]
+    [Display(Name = "Languages"), JsonPropertyName("languages")]
     public CountryLanguages Languages { get; set; }
 
-    [JsonPropertyName("latlng")]
+    [Display(Name = "Lat/Lng"), JsonPropertyName("latlng")]
     public List<double> LatLng { get; set; }
 
-    [JsonPropertyName("landlocked")]
+    [Display(Name = "Land Locked"), JsonPropertyName("landlocked")]
     public bool LandLocked { get; set; }
 
-    [JsonPropertyName("borders")]
+    [Display(Name = "Borders"), JsonPropertyName("borders")]
     public List<string> Borders { get; set; }
 
-    [JsonPropertyName("area")]
+    [Display(Name = "Area"), JsonPropertyName("area")]
     public double Area { get; set; }
 
-    [JsonPropertyName("flag")]
+    [Display(Name = "Flag"), JsonPropertyName("flag")]
     public string Flag { get; set; }
 
-    [JsonPropertyName("maps")]
+    [Display(Name = "Maps"), JsonPropertyName("maps")]
     public CountryMaps Maps { get; set; }
 
-    [JsonPropertyName("population")]
+    [Display(Name = "Population"), JsonPropertyName("population")]
     public int Population { get; set; }
 
-    [JsonPropertyName("fifa")]
+    [Display(Name = "FIFA"), JsonPropertyName("fifa")]
     public string Fifa { get; set; }
 
-    [JsonPropertyName("car")]
+    [Display(Name = "Car"), JsonPropertyName("car")]
     public CountryCar car { get; set; }
 
-    [JsonPropertyName("timezones")]
+    [Display(Name = "TimeZones"), JsonPropertyName("timezones")]
     public List<string> Timezones { get; set; }
 
-    [JsonPropertyName("continents")]
+    [Display(Name = "Continents"), JsonPropertyName("continents")]
     public List<string> Continents { get; set; }
 
-    [JsonPropertyName("flags")]
+    [Display(Name = "Flags"), JsonPropertyName("flags")]
     public CountryFlags Flags { get; set; }
 
-    [JsonPropertyName("coatOfArms")]
+    [Display(Name = "Coat Of Arms"), JsonPropertyName("coatOfArms")]
     public CountryCoatOfArms CoatOfArms { get; set; }
 
-    [JsonPropertyName("startOfWeek")]
+    [Display(Name = "Start Of Week"), JsonPropertyName("startOfWeek")]
     public string StartOfWeek { get; set; }
 
-    [JsonPropertyName("capitalInfo")]
+    [Display(Name = "Capital Info"), JsonPropertyName("capitalInfo")]
     public CountryCapitalInfo CapitalInfo { get; set; }
 
-    [JsonPropertyName("postalCode")]
+    [Display(Name = "Postal Code"), JsonPropertyName("postalCode")]
     public CountryPostalCode PostalCode { get; set; }
 }

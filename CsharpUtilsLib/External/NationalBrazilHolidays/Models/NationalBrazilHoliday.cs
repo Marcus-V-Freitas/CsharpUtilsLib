@@ -2,12 +2,12 @@ namespace CsharpUtilsLib.External.NationalBrazilHolidays.Models;
 
 public sealed class NationalBrazilHoliday
 {
-    [JsonPropertyName("date")]
+    [Display(Name = "Date"), JsonPropertyName("date")]
     public string Date { get; set; }
 
-    [JsonPropertyName("name")]
+    [Display(Name = "Name"), JsonPropertyName("name")]
     public string Name { get; set; }
 
-    [JsonPropertyName("type")]
+    [Display(Name = "Type"), JsonPropertyName("type")]
     public string Type { get; set; }
 }

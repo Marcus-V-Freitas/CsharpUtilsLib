@@ -4,33 +4,33 @@ public sealed class FIPE
 {
     private string _modelo;
 
-    [JsonPropertyName("valor")]
+    [Display(Name = "Valor"), JsonPropertyName("valor")]
     public string Valor { get; set; }
 
-    [JsonPropertyName("marca")]
+    [Display(Name = "Marca"), JsonPropertyName("marca")]
     public string Marca { get; set; }
 
-    [JsonPropertyName("modelo")]
+    [Display(Name = "Modelo"), JsonPropertyName("modelo")]
     public string Modelo { get => _modelo; set => _modelo = value.Trim(); }
 
-    [JsonPropertyName("anoModelo")]
+    [Display(Name = "Ano do Modelo"), JsonPropertyName("anoModelo")]
     public int AnoModelo { get; set; }
 
-    [JsonPropertyName("combustivel")]
+    [Display(Name = "Combustível"), JsonPropertyName("combustivel")]
     public string Combustivel { get; set; }
 
-    [JsonPropertyName("codigoFipe")]
+    [Display(Name = "Código da FIPE"), JsonPropertyName("codigoFipe")]
     public string CodigoFipe { get; set; }
 
-    [JsonPropertyName("mesReferencia")]
+    [Display(Name = "Mês de Referência"), JsonPropertyName("mesReferencia")]
     public string MesReferencia { get; set; }
 
-    [JsonPropertyName("tipoVeiculo")]
+    [Display(Name = "Tipo de Veículo"), JsonPropertyName("tipoVeiculo")]
     public int TipoVeiculo { get; set; }
 
-    [JsonPropertyName("siglaCombustivel")]
+    [Display(Name = "Sigla do Combustível"), JsonPropertyName("siglaCombustivel")]
     public string SiglaCombustivel { get; set; }
 
-    [JsonPropertyName("dataConsulta")]
+    [Display(Name = "Data da Consulta"), JsonPropertyName("dataConsulta")]
     public string DataConsulta { get; set; }
 }

@@ -2,45 +2,45 @@ namespace CsharpUtilsLib.External.Companies.Models;
 
 public sealed class CompanyQsa
 {
-    [JsonPropertyName("pais")]
+    [Display(Name = "País"), JsonPropertyName("pais")]
     public string Pais { get; set; }
 
-    [JsonPropertyName("nome_socio")]
+    [Display(Name = "Nome do Sócio"), JsonPropertyName("nome_socio")]
     public string NomeSocio { get; set; }
 
-    [JsonPropertyName("codigo_pais")]
+    [Display(Name = "Código do País"), JsonPropertyName("codigo_pais")]
     public string CodigoPais { get; set; }
 
-    [JsonPropertyName("faixa_etaria")]
+    [Display(Name = "Faixa Etária"), JsonPropertyName("faixa_etaria")]
     public string FaixaEtaria { get; set; }
 
-    [JsonPropertyName("cnpj_cpf_do_socio")]
+    [Display(Name = "CNPJ/CPF do Sócio"), JsonPropertyName("cnpj_cpf_do_socio")]
     public string CnpjCpfDoSocio { get; set; }
 
-    [JsonPropertyName("qualificacao_socio")]
+    [Display(Name = "Qualificação do Sócio"), JsonPropertyName("qualificacao_socio")]
     public string QualificacaoSocio { get; set; }
 
-    [JsonPropertyName("codigo_faixa_etaria")]
+    [Display(Name = "Código da Faixa Etária"), JsonPropertyName("codigo_faixa_etaria")]
     public int? CodigoFaixaEtaria { get; set; }
 
-    [JsonPropertyName("data_entrada_sociedade")]
+    [Display(Name = "Data da Entrada na Sociedade"), JsonPropertyName("data_entrada_sociedade")]
     public string DataEntradaSociedade { get; set; }
 
-    [JsonPropertyName("identificador_de_socio")]
+    [Display(Name = "Identificador de Sócio"), JsonPropertyName("identificador_de_socio")]
     public int? IdentificadorDeSocio { get; set; }
 
-    [JsonPropertyName("cpf_representante_legal")]
+    [Display(Name = "CPF do Representante Legal"), JsonPropertyName("cpf_representante_legal")]
     public string CpfRepresentanteLegal { get; set; }
 
-    [JsonPropertyName("nome_representante_legal")]
+    [Display(Name = "Nome do Representante Legal"), JsonPropertyName("nome_representante_legal")]
     public string NomeRepresentanteLegal { get; set; }
 
-    [JsonPropertyName("codigo_qualificacao_socio")]
+    [Display(Name = "Código da Qualificação do Sócio"), JsonPropertyName("codigo_qualificacao_socio")]
     public int? CodigoQualificacaoSocio { get; set; }
 
-    [JsonPropertyName("qualificacao_representante_legal")]
+    [Display(Name = "Qualificação do Representante Legal"), JsonPropertyName("qualificacao_representante_legal")]
     public string QualificacaoRepresentanteLegal { get; set; }
 
-    [JsonPropertyName("codigo_qualificacao_representante_legal")]
+    [Display(Name = "Código da Qualificação do Representante Legal"), JsonPropertyName("codigo_qualificacao_representante_legal")]
     public int? CodigoQualificacaoRepresentanteLegal { get; set; }
 }

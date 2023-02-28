@@ -2,9 +2,9 @@ namespace CsharpUtilsLib.External.Location.Models.Countries;
 
 public sealed class CountryMaps
 {
-    [JsonPropertyName("googleMaps")]
+    [Display(Name = "Google Maps"), JsonPropertyName("googleMaps")]
     public string GoogleMaps { get; set; }
 
-    [JsonPropertyName("openStreetMaps")]
+    [Display(Name = "Open Street Maps"), JsonPropertyName("openStreetMaps")]
     public string OpenStreetMaps { get; set; }
 }

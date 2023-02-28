@@ -2,9 +2,9 @@ namespace CsharpUtilsLib.External.Location.Models.Countries;
 
 public sealed class CountryCar
 {
-    [JsonPropertyName("signs")]
+    [Display(Name = "Signs"), JsonPropertyName("signs")]
     public List<string> Signs { get; set; }
 
-    [JsonPropertyName("side")]
+    [Display(Name = "Side"), JsonPropertyName("side")]
     public string Side { get; set; }
 }

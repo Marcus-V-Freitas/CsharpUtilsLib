@@ -2,12 +2,12 @@ namespace CsharpUtilsLib.External.Location.Models.Countries;
 
 public sealed class CountryFlags
 {
-    [JsonPropertyName("png")]
+    [Display(Name = "PNG"), JsonPropertyName("png")]
     public string PNG { get; set; }
 
-    [JsonPropertyName("svg")]
+    [Display(Name = "SVG"), JsonPropertyName("svg")]
     public string SVG { get; set; }
 
-    [JsonPropertyName("alt")]
+    [Display(Name = "ALT"), JsonPropertyName("alt")]
     public string ALT { get; set; }
 }

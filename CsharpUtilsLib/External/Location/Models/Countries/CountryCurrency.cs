@@ -2,9 +2,9 @@ namespace CsharpUtilsLib.External.Location.Models.Countries;
 
 public sealed class CountryCurrency
 {
-    [JsonPropertyName("name")]
+    [Display(Name = "Name"), JsonPropertyName("name")]
     public string Name { get; set; }
 
-    [JsonPropertyName("symbol")]
+    [Display(Name = "Symbol"), JsonPropertyName("symbol")]
     public string Symbol { get; set; }
 }

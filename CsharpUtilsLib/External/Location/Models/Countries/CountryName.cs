@@ -2,12 +2,12 @@ namespace CsharpUtilsLib.External.Location.Models.Countries;
 
 public sealed class CountryName
 {
-    [JsonPropertyName("common")]
+    [Display(Name = "Common"), JsonPropertyName("common")]
     public string Common { get; set; }
 
-    [JsonPropertyName("official")]
+    [Display(Name = "Official"), JsonPropertyName("official")]
     public string Official { get; set; }
 
-    [JsonPropertyName("nativeName")]
+    [Display(Name = "Native Name"), JsonPropertyName("nativeName")]
     public CountryNativeName NativeName { get; set; }
 }

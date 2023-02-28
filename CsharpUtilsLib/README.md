@@ -11,14 +11,19 @@
   >- FormatCPF
   >- FormatCNPJ
   >- FormatPhoneNumber
+  >- FormatCEP
+  >- FormatNCM
+  >- FormatFIPECode
 
 > Validate Brazilian documents and ohers things:
-  >- IsValidEmail
-  >- ValidateEAN
-  >- IsCNPJ
-  >- IsCPF
+  >- IsValidCNPJ
+  >- IsValidCPF
   >- IsValidPis
   >- IsValidVoterIDCard (Título de Eleitor)
+  >- IsValidCep
+  
+> Others
+  >- BrazilProcessNumber (class)
   
 ---
   
@@ -33,6 +38,7 @@
   >- ListIsNullOrEmpty
   >- AddIfNotNull (ICollection, IDictionary)
   >- AddOrChangeValue
+  >- AddOrChangeValueByIndex
   >- KeyValueIsNull
   >- AddRangeIfNotNullOrEmpty
   >- TryGetValue (IDictionary, Arrays, IList, KeyValuePair)
@@ -61,6 +67,7 @@
   >- IsBetweenDates
   >- GetNextWeekday
   >- GetWeekdayCount
+  >- ConvertToDatetime
 
 ---
 
@@ -78,7 +85,14 @@
 * **External**
 
 > Operatons with external tools:
-  >- GetCEP
+  >- Companies (class)
+  >- FIPE table (class)
+  >- IP (class)
+  >- NCM (class)
+  >- National Brazil Holidays (class)
+  >- Taxs (class)
+  >- CEP (class)
+  >- Country (class)
   >- GoogleTranslate (class)
   
  ---
@@ -96,6 +110,12 @@
   >- CreateLocalFileIfNotExists
   >- CreateLocalDirectoryIfNotExists
   >- FileTypeIdentify (class)
+  >- GetDirectorySizeContent
+  >- RenameFile
+  >- ClearDirectoryContent
+  >- CopyDirectoryContent
+  >- CreateTextFileWithContent
+  >- MergeFiles
   
 ---
 
@@ -138,7 +158,6 @@
   >- GetUniqueKey
   >- RemoveDocumentMask
   >- ToTitleCase
-  >- ConvertToDatetime
   >- SpecificSplit
   >- Count 
   >- OnlyNumbers
@@ -167,5 +186,18 @@
   >- CombineUrl
   >- ClearHtml
 
+---
 
+* **Global**
 
+> Generic operations
+  >- IsValidEmail
+  >- IsValidEAN
+  >- IsValidIpAddress
+    
+--- 
+
+* **SystemResources**
+
+> Monitoring system resources (memory, cpu and time)
+  >- TaskMonitor (class)

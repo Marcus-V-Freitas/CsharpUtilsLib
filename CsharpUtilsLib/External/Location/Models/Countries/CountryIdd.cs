@@ -2,9 +2,9 @@ namespace CsharpUtilsLib.External.Location.Models.Countries;
 
 public sealed class CountryIdd
 {
-    [JsonPropertyName("root")]
+    [Display(Name = "Root"), JsonPropertyName("root")]
     public string Root { get; set; }
 
-    [JsonPropertyName("suffixes")]
+    [Display(Name = "Suffixes"), JsonPropertyName("suffixes")]
     public List<string> Suffixes { get; set; }
 }

@@ -2,9 +2,9 @@ namespace CsharpUtilsLib.External.Taxs.Models;
 
 public sealed class Tax
 {
-    [JsonPropertyName("nome")]
+    [Display(Name = "Nome"), JsonPropertyName("nome")]
     public string Nome { get; set; }
 
-    [JsonPropertyName("valor")]
+    [Display(Name = "Valor"), JsonPropertyName("valor")]
     public double Valor { get; set; }
 }
