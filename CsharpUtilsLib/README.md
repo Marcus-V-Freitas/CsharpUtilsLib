@@ -94,6 +94,7 @@
   >- CEP (class)
   >- Country (class)
   >- GoogleTranslate (class)
+  >- ISBN (class)
   
  ---
  

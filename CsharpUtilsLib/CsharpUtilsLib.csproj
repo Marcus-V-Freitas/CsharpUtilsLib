@@ -6,7 +6,7 @@
 		<Nullable>enable</Nullable>
 		<id>CsharpUtilsLib</id>
 		<PackageIcon>icon.png</PackageIcon>
-		<version>1.0.4</version>
+		<version>1.0.5</version>
 		<authors>Marcus-V-Freitas</authors>
 		<owners>Marcus-V-Freitas</owners>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -14,7 +14,7 @@
 		<RepositoryUrl>https://github.com/Marcus-V-Freitas/CsharpUtilsLib</RepositoryUrl>
 		<description>Lib containing numerous functions to simplify the day to day development</description>
 		<copyright>Copyright 2023</copyright>
-		<FileVersion>1.0.4.0</FileVersion>
+		<FileVersion>1.0.5.0</FileVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -27,6 +27,7 @@
 		<Folder Include="EnumType\" />
 		<Folder Include="Extensions\" />
 		<Folder Include="External\FIPEs\Models\" />
+		<Folder Include="External\ISBNs\Models\" />
 		<Folder Include="External\NCMs\Models\" />
 		<Folder Include="External\Taxs\Models\" />
 		<Folder Include="Global\" />
