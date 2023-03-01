@@ -79,7 +79,13 @@
   >- GetDisplayName
   >- GetEnumName
   >- GetEnumValue
-    
+
+---
+
+* **Extensions**
+  >- GetRandom
+  >- With
+
 ---
 
 * **External**
@@ -141,6 +147,22 @@
   >- IsOdd
   >- IsPrime
   >- StandardDeviation
+
+ ---
+ 
+* **Reflecions**
+  >- GetDisplayName
+  >- DefaultConstructor
+  >- CreateInstance
+  >- InvokeMethod
+  >- SetPropertyValue
+  >- GetPropertyValue
+  >- GetStringPropertyValue
+  >- SetFieldValue
+  >- GetFieldValue
+  >- GetStringFieldValue
+  >- GetFullTypeName
+  >- HasPropertyOrField
 
 ---
 

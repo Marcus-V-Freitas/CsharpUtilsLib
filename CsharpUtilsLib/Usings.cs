@@ -37,3 +37,4 @@ global using Microsoft.Extensions.Primitives;
 global using CsharpUtilsLib.SystemResources;
 global using CsharpUtilsLib.Brazil.CNJ;
 global using CsharpUtilsLib.External.ISBNs.Models;
+global using CsharpUtilsLib.Reflections;
