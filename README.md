@@ -79,7 +79,13 @@
   >- GetDisplayName
   >- GetEnumName
   >- GetEnumValue
-    
+
+---
+
+* **Extensions**
+  >- GetRandom
+  >- With
+
 ---
 
 * **External**
@@ -94,6 +100,14 @@
   >- CEP (class)
   >- Country (class)
   >- GoogleTranslate (class)
+  >- ISBN (class)
+  >- Ticker (class)
+  >- Temperature (class)
+  >- Meal (class)
+  >- Inflation (class)
+  >- Geolocation (class)
+  >- English Dictionary (class)
+  >- Currency Converter (class)
   
  ---
  
@@ -140,6 +154,22 @@
   >- IsOdd
   >- IsPrime
   >- StandardDeviation
+
+ ---
+ 
+* **Reflecions**
+  >- GetDisplayName
+  >- DefaultConstructor
+  >- CreateInstance
+  >- InvokeMethod
+  >- SetPropertyValue
+  >- GetPropertyValue
+  >- GetStringPropertyValue
+  >- SetFieldValue
+  >- GetFieldValue
+  >- GetStringFieldValue
+  >- GetFullTypeName
+  >- HasPropertyOrField
 
 ---
 
