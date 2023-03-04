@@ -110,4 +110,99 @@ public sealed class ExternalTests
 
         Assert.Equal(holidayDate, expectedDate);
     }
+
+    [Theory]
+    [InlineData("Salmon Avocado Salad", "Seafood")]
+    [InlineData("Japanese gohan rice", "Side")]
+    public async Task MealAPI(string meal, string expectCategory)
+    {
+        MealData mealData = new MealData();
+
+        var result = await mealData.GetMealByName(meal);
+
+        Assert.Equal(result.Meals?.FirstOrDefault()?.Category, expectCategory);
+    }
+
+    [Theory]
+    [InlineData(-23.5, -46.5, "GMT")]
+    [InlineData(40.42, -3.70, "GMT")]
+    public async Task TemperatureAPI(long latitude, long logintude, string expectTimeZoneAbbreviation)
+    {
+        TemperatureData temperatureData = new TemperatureData();
+
+        var result = await temperatureData.GetTemperatureByLogLat(latitude, logintude);
+
+        Assert.Equal(result.TimezoneAbbreviation, expectTimeZoneAbbreviation);
+    }
+
+    [Theory]
+    [InlineData("São Paulo", -23.5475, -46.63611)]
+    public async Task GeolocationAPI(string cityName, double expectedLatitude, double expectedLongitude)
+    {
+        GeolocationData geolocationData = new GeolocationData();
+
+        var result = await geolocationData.GetInfosFromCityName(cityName);
+
+        Assert.Equal(result.Results.FirstOrDefault()!.Latitude, expectedLatitude);
+        Assert.Equal(result.Results.FirstOrDefault()!.Longitude, expectedLongitude);
+    }
+
+    [Theory]
+    [InlineData("avocado", "https://en.wiktionary.org/wiki/avocado")]
+    [InlineData("money", "https://en.wiktionary.org/wiki/money")]
+    public async Task EnglishDictionaryAPI(string word, string expectedSourceUrl)
+    {
+        EnglishDictionaryData englishDictionaryData = new EnglishDictionaryData();
+
+        var result = await englishDictionaryData.GetDefinitionsFromWord(word);
+
+        string sourceUrl = result.FirstOrDefault()!.SourceUrls.FirstOrDefault()!;
+
+        Assert.Equal(sourceUrl, expectedSourceUrl);
+    }
+
+    [Theory]
+    [InlineData("WALM34", "Walmart Inc.")]
+    [InlineData("BOAC34", "Bank of America Corporation")]
+    public async Task TickerAPI(string word, string expectlongCompanyName)
+    {
+        TickerData tickerData = new TickerData();
+
+        var result = await tickerData.GetTickerByName(word);
+
+        string longCompanyName = result?.Results?.FirstOrDefault()!.LongName!;
+
+        Assert.Equal(longCompanyName, expectlongCompanyName);
+    }
+
+    [Theory]
+    [InlineData("USD", "BRL", "Dólar Americano/Real Brasileiro")]
+    [InlineData("USD", "EUR", "Dólar Americano/Euro")]
+    public async Task CurrencyAPI(string baseCurrency, string anotherCurrency, string expectName)
+    {
+        CurrencyData currencyData = new CurrencyData();
+
+        var result = await currencyData.ConvertCurrencies(baseCurrency, anotherCurrency);
+
+        string name = result?.Currency?.FirstOrDefault()!.Name!;
+
+        Assert.Equal(name, expectName);
+    }
+
+    [Theory]
+    [InlineData("Brazil", "29/10/2022", "29/01/2023", "6.47")]
+    [InlineData("Argentina", "01/01/2021", "31/12/2022", "11.89")]
+    public async Task InflationAPI(string country, string startDate, string endDate, string expectedhighestValue)
+    {
+        InflationData inflationData = new InflationData();
+
+        DateTime start = startDate.ConvertToDatetime();
+        DateTime end = endDate.ConvertToDatetime();
+
+        var result = await inflationData.GetByCountryInPeriod(country, start, end);
+
+        var highestValue = result.Inflation?.Max(x => x.Value)!;
+
+        Assert.Equal(highestValue, expectedhighestValue);
+    }
 }

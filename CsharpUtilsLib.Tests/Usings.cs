@@ -1,4 +1,5 @@
 global using Xunit;
+global using CsharpUtilsLib.Date;
 global using CsharpUtilsLib.External.Location;
 global using CsharpUtilsLib.External.Location.Models.Countries.Enums;
 global using CsharpUtilsLib.External.Translate;
@@ -11,3 +12,10 @@ global using CsharpUtilsLib.External.NationalBrazilHolidays;
 global using CsharpUtilsLib.SystemResources;
 global using CsharpUtilsLib.Validations.Brazil;
 global using CsharpUtilsLib.Brazil.CNJ;
+global using CsharpUtilsLib.External.Meal;
+global using CsharpUtilsLib.External.Temperatures;
+global using CsharpUtilsLib.External.Geolocations;
+global using CsharpUtilsLib.External.Dictionaries;
+global using CsharpUtilsLib.External.Tickers;
+global using CsharpUtilsLib.External.Inflations;
+global using CsharpUtilsLib.External.Currencies;

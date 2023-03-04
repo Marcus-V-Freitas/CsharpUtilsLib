@@ -101,6 +101,13 @@
   >- Country (class)
   >- GoogleTranslate (class)
   >- ISBN (class)
+  >- Ticker (class)
+  >- Temperature (class)
+  >- Meal (class)
+  >- Inflation (class)
+  >- Geolocation (class)
+  >- English Dictionary (class)
+  >- Currency Converter (class)
   
  ---
  
