@@ -2,7 +2,7 @@ namespace CsharpUtilsLib.External.Inflations;
 
 public sealed class InflationData : BaseExternalData<SearchInflation>
 {
-    protected override string Url => "https://brapi.dev/api/v2/inflation?country={0}&historical=false&start={1}&end={2}&sortBy=date&sortOrder=desc";
+    protected override string Url => "https://brapi.dev/api/v2/inflation?country={0}&historical=false&start={1}&end={2}&sortBy=date&sortOrder={3}";
 
     protected override Dictionary<string, string> Headers => new()
     {
@@ -12,8 +12,10 @@ public sealed class InflationData : BaseExternalData<SearchInflation>
         { "Host", "brapi.dev" }
     };
 
-    public async Task<SearchInflation> GetByCountryInPeriod(string country, DateTime start, DateTime end)
+    public async Task<SearchInflation> GetByCountryInPeriod(string country, DateTime start, DateTime end, bool desc = true)
     {
-        return await Request(endpoint: null!, country, Uri.EscapeDataString(start.ToString("dd/MM/yyyy")), Uri.EscapeDataString(end.ToString("dd/MM/yyyy")));
+        string sort = desc ? "desc" : "asc";
+
+        return await Request(endpoint: null!, country, Uri.EscapeDataString(start.ToString("dd/MM/yyyy")), Uri.EscapeDataString(end.ToString("dd/MM/yyyy")), sort);
     }
 }

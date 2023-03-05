@@ -150,10 +150,10 @@ public sealed class HtmlString
         return ExtractNodeCollection(nodeXPath).ToNullList();
     }
 
-    public List<List<HtmlNode>> ExtractTableTagsInfos(string nodeTrTagXpath, string nodeTagXpath, bool removeEmpty = true)
+    public List<List<HtmlNode>> ExtractTableInternalNodes(string nodeTrXpath, string nodeTdXpath, bool removeEmpty = true)
     {
-        var tagNodes = new List<List<HtmlNode>>();
-        var nodes = ExtractNodeCollection(nodeTrTagXpath);
+        var detailsNodes = new List<List<HtmlNode>>();
+        var nodes = ExtractNodeCollection(nodeTrXpath);
 
         if (nodes.ListIsNullOrEmpty())
         {
@@ -162,7 +162,7 @@ public sealed class HtmlString
 
         foreach (var node in nodes)
         {
-            var nodeInfos = node.SelectNodes(nodeTagXpath).ToNullList();
+            var nodeInfos = node.SelectNodes(nodeTdXpath).ToNullList();
 
             if (removeEmpty)
             {
@@ -172,11 +172,11 @@ public sealed class HtmlString
 
             if (!nodeInfos.ListIsNullOrEmpty())
             {
-                tagNodes.AddIfNotNull(nodeInfos);
+                detailsNodes.AddIfNotNull(nodeInfos);
             }
         }
 
-        return tagNodes;
+        return detailsNodes;
     }
 
     public HtmlNode ExtractSingleNode(string nodeXPath)

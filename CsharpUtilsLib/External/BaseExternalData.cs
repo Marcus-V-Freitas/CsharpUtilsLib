@@ -27,6 +27,11 @@ public abstract class BaseExternalData<T> where T : class
         string baseUrl = string.IsNullOrEmpty(endpoint) ? Url : Web.Web.CombineUrl(Url, endpoint);
         string url = string.Format(baseUrl, parameters);
 
+        if (typeof(T) == typeof(string))
+        {
+            return (await _http.GET(url, Cookies, Headers) as T)!;
+        }
+
         return await _http.GET<T>(url, Cookies, Headers);
     }
 }

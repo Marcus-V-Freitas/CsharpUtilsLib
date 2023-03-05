@@ -190,6 +190,37 @@ public sealed class ExternalTests
     }
 
     [Theory]
+    [InlineData("QM333246322BR", "Objeto entregue ao destinatário")]
+    [InlineData("IX021419098BR", "Objeto entregue ao destinatário")]
+    public async Task CorreiosTrackingAPI(string trackingCode, string expectedFinalStatus)
+    {
+        CorreiosTrackingData correiosTrackingData = new CorreiosTrackingData();
+
+        var result = await correiosTrackingData.GetByTrackingCode(trackingCode, asc: false);
+
+        string finalStatus = result?.FirstOrDefault()!.Status!;
+
+        Assert.Equal(finalStatus, expectedFinalStatus);
+    }
+
+    [Theory]
+    [InlineData("03/03/2023", "04/03/2023", "Com apoio do MPO, IBGE assina acordo de cooperação para finalizar Censo em território Yanomami")]
+    [InlineData("01/01/2022", "02/01/2022", "Começa contagem regressiva para o início da coleta do Censo 2022")]
+    public async Task IBGENewsAPI(string startDate, string endDate, string expectMainNewsTitle)
+    {
+        IBGENewsData ibgeNewsData = new IBGENewsData();
+
+        DateTime start = startDate.ConvertToDatetime();
+        DateTime end = endDate.ConvertToDatetime();
+
+        var result = await ibgeNewsData.GetNewsByPeriod(start, end, sortByHighlights: true);
+
+        string mainNewsTitle = result?.Items?.FirstOrDefault()!.Titulo!;
+
+        Assert.Equal(mainNewsTitle, expectMainNewsTitle);
+    }
+
+    [Theory]
     [InlineData("Brazil", "29/10/2022", "29/01/2023", "6.47")]
     [InlineData("Argentina", "01/01/2021", "31/12/2022", "11.89")]
     public async Task InflationAPI(string country, string startDate, string endDate, string expectedhighestValue)
@@ -204,5 +235,19 @@ public sealed class ExternalTests
         var highestValue = result.Inflation?.Max(x => x.Value)!;
 
         Assert.Equal(highestValue, expectedhighestValue);
+    }
+
+    [Fact]
+    public async Task CorreiosShippingAPI()
+    {
+        var request = new CorreiosShippingRequest("95020450", "71939360", 23.78, ShippingFormat.BoxOrPackage,
+                                                  40, 71.50, 58, false, 0, false, ShippingService.RetailSEDEX,
+                                                  0, ShippingIndicator.PriceAndTerm);
+
+        CorreiosShippingData correiosShipping = new CorreiosShippingData();
+
+        var result = await correiosShipping.GetByShippingDetails(request);
+
+        Assert.Equal("991,30", result.Servico.Valor);
     }
 }
