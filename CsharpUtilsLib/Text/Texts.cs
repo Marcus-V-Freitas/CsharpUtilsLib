@@ -2,6 +2,14 @@
 
 public static class Texts
 {
+    public static string GenerateRandomPassword(int length)
+    {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        return new string(Enumerable.Repeat(chars, length)
+                                    .Select(s => s[SafeRandom.Next(s.Length)])
+                                    .ToArray());
+    }
+
     public static bool IsSequentialRepetition(this string input)
     {
         if (string.IsNullOrEmpty(input))
@@ -192,7 +200,7 @@ public static class Texts
         }
 
         document = document.Trim();
-        document = document.Replace(".", "").Replace("-", "").Replace(" ", "").Replace("/","");
+        document = document.Replace(".", "").Replace("-", "").Replace(" ", "").Replace("/", "");
 
         return document;
     }

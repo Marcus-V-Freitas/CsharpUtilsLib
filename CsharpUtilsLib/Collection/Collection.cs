@@ -59,17 +59,37 @@ public static class Collections
 
     public static bool DictionaryIsNullOrEmpty<TKey, TValue>(this IDictionary<TKey, TValue> source)
     {
-        return source == null || !source.Any();
+        return source.DictionaryIsNull() || source.DictionaryIsEmpty();
+    }
+
+    public static bool DictionaryIsNull<TKey, TValue>(this IDictionary<TKey, TValue> source)
+    {
+        return source == null;
+    }
+
+    public static bool DictionaryIsEmpty<TKey, TValue>(this IDictionary<TKey, TValue> source)
+    {
+        return !source.Any();
     }
 
     public static bool ListIsNullOrEmpty<T>(this IEnumerable<T> source)
     {
-        return source == null || !source.Any();
+        return source.ListIsNull() || source.ListIsEmpty();
+    }
+
+    public static bool ListIsNull<T>(this IEnumerable<T> source)
+    {
+        return source == null;
+    }
+
+    public static bool ListIsEmpty<T>(this IEnumerable<T> source)
+    {
+        return !source.Any();
     }
 
     public static void AddIfNotNull<T>(this ICollection<T> source, T item)
     {
-        if (source != null && item != null)
+        if (!source.ListIsNull() && item != null)
         {
             source.Add(item);
         }
@@ -77,7 +97,7 @@ public static class Collections
 
     public static void AddIfNotNull<TKey, TValue>(this IDictionary<TKey, TValue> source, TKey key, TValue value)
     {
-        if (source != null && key != null && value != null)
+        if (!source.ListIsNull() && key != null && value != null)
         {
             source.Add(key, value);
         }
@@ -85,7 +105,7 @@ public static class Collections
 
     public static void AddOrChangeValue<TKey, TValue>(this IDictionary<TKey, TValue> source, TKey key, TValue value)
     {
-        if (source == null || key == null || value == null)
+        if (source.ListIsNull() || key == null || value == null)
         {
             return;
         }
@@ -102,7 +122,7 @@ public static class Collections
 
     public static void AddOrChangeValueByIndex<TKey, TValue>(this IDictionary<TKey, TValue> source, TValue value, int index)
     {
-        if (index < 0 || source == null || source.Count <= index)
+        if (index < 0 || source.ListIsNull() || source.Count <= index)
         {
             return;
         }
@@ -119,7 +139,7 @@ public static class Collections
 
     public static void AddRangeIfNotNullOrEmpty<T>(this ICollection<T> source, IEnumerable<T> items)
     {
-        if (source != null && !items.ListIsNullOrEmpty())
+        if (!source.ListIsNull() && !items.ListIsNullOrEmpty())
         {
             foreach (var item in items)
             {
