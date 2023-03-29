@@ -51,7 +51,7 @@ public sealed class BrazilProcessNumber
             return false;
         }
 
-        int extractedDigit = int.Parse(clearProcessNumber.Substring(clearProcessNumber.Length - 13, 2));
+        string extractedDigit = clearProcessNumber.Substring(clearProcessNumber.Length - 13, 2);
         string vara = clearProcessNumber.Substring(clearProcessNumber.Length - 4, 4);
         string tribunal = clearProcessNumber.Substring(clearProcessNumber.Length - 6, 2);
         string ramo = clearProcessNumber.Substring(clearProcessNumber.Length - 7, 1);
@@ -59,11 +59,11 @@ public sealed class BrazilProcessNumber
         int length = clearProcessNumber.Length - 13;
         string numeroSequencial = clearProcessNumber.Substring(0, length).PadLeft(7, '0');
         int calculatedDigit = 98 - int.Parse(CalculateMod(numeroSequencial + anoDeInicio + ramo + tribunal + vara + "00", "97"));
-        var result = extractedDigit == calculatedDigit;
+        var result = int.Parse(extractedDigit) == calculatedDigit;
 
         if (result)
         {
-            brazilProcessNumber = new BrazilProcessNumber(numeroSequencial, calculatedDigit.ToString().PadLeft(2, '0'), anoDeInicio, ramo, tribunal, vara);
+            brazilProcessNumber = new BrazilProcessNumber(numeroSequencial, extractedDigit, anoDeInicio, ramo, tribunal, vara);
         }
 
         return result;
