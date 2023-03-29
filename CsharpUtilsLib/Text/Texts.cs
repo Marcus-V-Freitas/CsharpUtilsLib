@@ -215,6 +215,17 @@ public static class Texts
         return CultureInfo.InvariantCulture.TextInfo.ToTitleCase(input.ToLower());
     }
 
+    public static string ConvertToString(this IEnumerable<char> source)
+    {
+        StringBuilder sb = new StringBuilder();
+        foreach (char c in source)
+        {
+            sb.Append(c);
+        }
+
+        return sb.ToString();
+    }
+
     public static string[] SpecificSplit(this string value, char delimiter, int maxSplit = 0)
     {
         if (string.IsNullOrEmpty(value))

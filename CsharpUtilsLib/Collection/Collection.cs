@@ -87,6 +87,14 @@ public static class Collections
         return !source.Any();
     }
 
+    public static void AddIfNotEmptyOrNull(this List<string> source, string value)
+    {
+        if (!source.ListIsNull() && !string.IsNullOrEmpty(value))
+        {
+            source.Add(value);
+        }
+    }
+
     public static void AddIfNotNull<T>(this ICollection<T> source, T item)
     {
         if (!source.ListIsNull() && item != null)
@@ -135,6 +143,11 @@ public static class Collections
     public static bool KeyValueIsNull<TKey, TValue>(this KeyValuePair<TKey, TValue> source)
     {
         return source.Key == null || source.Value == null;
+    }
+
+    public static bool KeyValueIsNullOrEmpty(this KeyValuePair<string, string> keyValuePair)
+    {
+        return (string.IsNullOrEmpty(keyValuePair.Key) || string.IsNullOrEmpty(keyValuePair.Value));
     }
 
     public static void AddRangeIfNotNullOrEmpty<T>(this ICollection<T> source, IEnumerable<T> items)
@@ -199,5 +212,20 @@ public static class Collections
         }
 
         return source.ToList();
+    }
+
+    public static List<T> ToDefaultListIfNull<T>(this IEnumerable<T> source)
+    {
+        if (source.ListIsNull())
+        {
+            return new();
+        }
+
+        return source.ToList();
+    }
+
+    public static List<T> ToDistinctList<T>(this IEnumerable<T> source)
+    {
+        return source.Distinct().ToList();
     }
 }
