@@ -6,6 +6,11 @@ public static class Dates
     {
         CultureInfo cultureInfo = CultureInfo.InvariantCulture;
 
+        if (string.IsNullOrEmpty(value))
+        {
+            return defaultValue;
+        }
+
         if (!string.IsNullOrEmpty(culture))
         {
             cultureInfo = CultureInfo.GetCultureInfo(culture);
@@ -15,6 +20,29 @@ public static class Dates
         {
             return date;
         }
+
+        return defaultValue;
+    }
+
+    public static DateTime? TryConvertDatetime(this string value, string format = "dd/MM/yyyy", string culture = "", DateTime? defaultValue = null)
+    {
+        CultureInfo cultureInfo = CultureInfo.InvariantCulture;
+
+        if (string.IsNullOrEmpty(value))
+        {
+            return defaultValue;
+        }
+
+        if (!string.IsNullOrEmpty(culture))
+        {
+            cultureInfo = CultureInfo.GetCultureInfo(culture);
+        }
+
+        if (DateTime.TryParseExact(value, format, cultureInfo, DateTimeStyles.AllowWhiteSpaces, out DateTime date))
+        {
+            return date;
+        }
+
         return defaultValue;
     }
 

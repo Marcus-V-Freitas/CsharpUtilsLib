@@ -4,6 +4,11 @@ public static class Texts
 {
     public static string RemoveSpecialCharacters(this string text)
     {
+        if (string.IsNullOrEmpty(text))
+        {
+            return null!;
+        }
+
         StringBuilder sb = new StringBuilder();
         foreach (char c in text)
         {
@@ -141,6 +146,11 @@ public static class Texts
 
     public static int CountOcurrences(this string input, string value, StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
     {
+        if (input == null || value == null)
+        {
+            return 0;
+        }
+
         int count = 0;
         int index = input.IndexOf(value, stringComparison);
 
@@ -154,12 +164,12 @@ public static class Texts
 
     public static bool AnyDigits(this string input)
     {
-        return input.Any(char.IsDigit);
+        return input != null && input.Any(char.IsDigit);
     }
 
     public static bool AllDigits(this string input)
     {
-        return input.All(char.IsDigit);
+        return input != null && input.All(char.IsDigit);
     }
 
     public static string RemoveDiacritics(this string input)
@@ -205,6 +215,11 @@ public static class Texts
 
     public static string RemoveDuplicateWords(string text)
     {
+        if (string.IsNullOrEmpty(text))
+        {
+            return null!;
+        }
+
         string[] words = text.Split(' ');
         HashSet<string> uniqueWords = new HashSet<string>(words);
         return string.Join(" ", uniqueWords);
@@ -251,6 +266,11 @@ public static class Texts
 
     public static string ConvertToString(this IEnumerable<char> source)
     {
+        if (source.ListIsNullOrEmpty())
+        {
+            return null!;
+        }
+
         StringBuilder sb = new StringBuilder();
         foreach (char c in source)
         {
@@ -302,6 +322,11 @@ public static class Texts
 
     public static int Count(this string value, string substr, StringComparison strComp = StringComparison.CurrentCulture)
     {
+        if (value == null || substr == null)
+        {
+            return 0;
+        }
+
         int count = 0, index = value.IndexOf(substr, strComp);
         while (index != -1)
         {
@@ -313,7 +338,7 @@ public static class Texts
 
     public static string OnlyNumbers(this string text)
     {
-        return new string(text.Where(c => Char.IsDigit(c)).ToArray());
+        return new string((text ?? string.Empty).Where(c => Char.IsDigit(c)).ToArray());
     }
 
     public static string SafeSubstring(this string value, int startIndex, int length)

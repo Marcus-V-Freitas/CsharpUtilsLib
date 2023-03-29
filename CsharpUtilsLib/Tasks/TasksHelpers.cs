@@ -71,4 +71,18 @@ public static class TasksHelpers
             return fallbackValue;
         }
     }
+
+    public static async Task<T> TryAsync<T>(this Task<T> task, Action<Exception> errorHandler = null!)
+    {
+        try
+        {
+            return await task;
+        }
+        catch (Exception ex) when (errorHandler is not null)
+        {
+            errorHandler(ex);
+        }
+
+        return default!;
+    }
 }
