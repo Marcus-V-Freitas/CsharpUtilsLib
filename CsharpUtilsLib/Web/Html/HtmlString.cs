@@ -7,6 +7,7 @@ public sealed class HtmlString
 
     private HtmlString(string html, bool autoCloseTags = false)
     {
+        Id = $"{Guid.NewGuid()}";
         _html = WebUtility.HtmlDecode(html);
         _htmlDocument = CreateHtmlDocument(autoCloseTags);
     }
@@ -15,6 +16,8 @@ public sealed class HtmlString
     {
         return new HtmlString(html, autoCloseTags);
     }
+
+    public string Id { get; init; }
 
     public HtmlDocument Document { get => _htmlDocument; }
 
@@ -182,6 +185,11 @@ public sealed class HtmlString
     public HtmlNode ExtractSingleNode(string nodeXPath)
     {
         return Document.DocumentNode.SelectSingleNode(nodeXPath);
+    }
+
+    public bool ExistsInPage(params string[] terms)
+    {
+        return terms.Any(term => _html.Contains(term, StringComparison.OrdinalIgnoreCase));
     }
 
     public HtmlString Copy()

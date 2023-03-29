@@ -1,6 +1,6 @@
 namespace CsharpUtilsLib.Http;
 
-public sealed class HttpWrapper
+public sealed class HttpWrapper : IHttpWrapper
 {
     private readonly HttpClient _http;
 
@@ -20,6 +20,23 @@ public sealed class HttpWrapper
     public HttpWrapper(HttpClient http)
     {
         _http = http;
+    }
+
+    public async Task<HtmlString> HtmlGET(string Url,
+                                          List<KeyValuePair<string, string>> cookies = null!,
+                                          Dictionary<string, string> headers = null!)
+    {
+        var (content, _) = await SendResquest(HttpMethod.Get, Url, postData: null!, cookies: cookies, headers: headers);
+        return HtmlString.Instance(content);
+    }
+
+    public async Task<HtmlString> HtmlPOST(string Url,
+                                           HttpContent postData = null!,
+                                           List<KeyValuePair<string, string>> cookies = null!,
+                                           Dictionary<string, string> headers = null!)
+    {
+        var (content, _) = await SendResquest(HttpMethod.Post, Url, postData, cookies, headers);
+        return HtmlString.Instance(content);
     }
 
     public async Task<T> GET<T>(string Url,
@@ -138,7 +155,7 @@ public sealed class HttpWrapper
         return null!;
     }
 
-    private void AddCookies(HttpRequestMessage request, List<KeyValuePair<string, string>> cookies)
+    private static void AddCookies(HttpRequestMessage request, List<KeyValuePair<string, string>> cookies)
     {
         if (cookies.ListIsNullOrEmpty())
         {
@@ -149,7 +166,7 @@ public sealed class HttpWrapper
 
         foreach (var cookie in cookies)
         {
-            if (!string.IsNullOrEmpty(cookie.Key) && !string.IsNullOrEmpty(cookie.Value))
+            if (!cookie.KeyValueIsNullOrEmpty())
             {
                 sb.Append($"{cookie.Key}={cookie.Value}; ");
             }

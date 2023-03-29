@@ -2,6 +2,30 @@
 
 public static class Texts
 {
+    public static string RemoveSpecialCharacters(this string text)
+    {
+        StringBuilder sb = new StringBuilder();
+        foreach (char c in text)
+        {
+            if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
+            {
+                sb.Append(c);
+            }
+        }
+        return sb.ToString();
+    }
+
+    public static IEnumerable<string> SplitStringWithoutNullOrEmpty(this string text, string separator)
+    {
+        if (string.IsNullOrEmpty(text) || separator == null)
+        {
+            return Enumerable.Empty<string>();
+        }
+
+        IEnumerable<string> foundTexts = text.Split(new[] { separator }, StringSplitOptions.None);
+        return foundTexts.Where(x => !string.IsNullOrEmpty(x));
+    }
+
     public static string GenerateRandomPassword(int length)
     {
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -126,6 +150,16 @@ public static class Texts
             index = input.IndexOf(value, index + value.Length, stringComparison);
         }
         return count;
+    }
+
+    public static bool AnyDigits(this string input)
+    {
+        return input.Any(char.IsDigit);
+    }
+
+    public static bool AllDigits(this string input)
+    {
+        return input.All(char.IsDigit);
     }
 
     public static string RemoveDiacritics(this string input)

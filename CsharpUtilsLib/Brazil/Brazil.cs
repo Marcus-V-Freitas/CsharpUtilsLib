@@ -2,6 +2,12 @@ namespace CsharpUtilsLib.Validations.Brazil;
 
 public static class Brazil
 {
+    public static List<string> ExtractBrazilProcessesNumbersFromString(string text)
+    {
+        return text.MatchListOcurrencies(@"[0-9]{7}(\-[0-9]{2})(\.[0-9]{4})(\.[0-9]{1})(\.[0-9]{2})(\.[0-9]{4})")
+                   .ToDistinctList();
+    }
+
     public static string FormatPIS(string input)
     {
         if (string.IsNullOrEmpty(input))
@@ -134,7 +140,7 @@ public static class Brazil
         try
         {
             if (string.IsNullOrEmpty(cnpj))
-                return false;           
+                return false;
 
             int[] multiple1 = new int[12] { 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
             int[] multiple2 = new int[13] { 6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
@@ -185,7 +191,7 @@ public static class Brazil
         try
         {
             if (string.IsNullOrEmpty(cpf))
-                return false;            
+                return false;
 
             int[] multiple1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
             int[] multiple2 = new int[10] { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
