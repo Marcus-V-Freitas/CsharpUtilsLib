@@ -63,7 +63,7 @@ public sealed class BrazilProcessNumber
 
         if (result)
         {
-            brazilProcessNumber = new BrazilProcessNumber(numeroSequencial, calculatedDigit.ToString(), anoDeInicio, ramo, tribunal, vara);
+            brazilProcessNumber = new BrazilProcessNumber(numeroSequencial, calculatedDigit.ToString().PadLeft(2, '0'), anoDeInicio, ramo, tribunal, vara);
         }
 
         return result;
