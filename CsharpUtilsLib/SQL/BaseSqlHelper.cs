@@ -122,7 +122,7 @@ public abstract class BaseSqlHelper
 
         object result = (await command.ExecuteScalarAsync(token))!;
 
-        return SecureNullableReturnScalarValue(result, defaultValue);
+        return result.ConvertTo<T, object>(defaultValue);
     }
 
     public T ExecuteScalar<T>(Query query, T defaultValue = default!)
@@ -132,10 +132,10 @@ public abstract class BaseSqlHelper
 
         object result = command.ExecuteScalar()!;
 
-        return SecureNullableReturnScalarValue(result, defaultValue);
+        return result.ConvertTo<T, object>(defaultValue);
     }
 
-    public async IAsyncEnumerable<DbDataReader> ExecuteReaderAsync(Query query, [EnumeratorCancellation] CancellationToken token)
+    public async IAsyncEnumerable<DbDataReader> ExecuteReaderAsync(Query query, [EnumeratorCancellation] CancellationToken token = default)
     {
         using DbConnection conn = await ConfigureConnectionAsync(token);
         using DbCommand command = ConfigureCommand(query, conn);
@@ -157,17 +157,6 @@ public abstract class BaseSqlHelper
         {
             yield return cursor;
         }
-    }
-
-    protected static T SecureNullableReturnScalarValue<T>(object result, T defaultValue)
-    {
-        if (result == null || DBNull.Value.Equals(result))
-        {
-            return defaultValue;
-        }
-
-        Type type = typeof(T);
-        return (T)Convert.ChangeType(result, Nullable.GetUnderlyingType(type) ?? type);
     }
 
     protected abstract DbConnection ConfigureConnection();
