@@ -2,6 +2,54 @@
 
 public static class TasksHelpers
 {
+    public static Task<Task<T>> WhenAnyWithCompletionSource<T>(IEnumerable<Task<T>> tasks)
+    {
+        TaskCompletionSource<Task<T>> tcs = new TaskCompletionSource<Task<T>>();
+
+        foreach (Task<T> task in tasks)
+        {
+            task.ContinueWith(t => tcs.TrySetResult(t), TaskContinuationOptions.OnlyOnRanToCompletion);
+            task.ContinueWith(t => tcs.TrySetException(t?.Exception?.InnerExceptions!), TaskContinuationOptions.OnlyOnFaulted);
+            task.ContinueWith(t => tcs.TrySetCanceled(), TaskContinuationOptions.OnlyOnCanceled);
+        }
+
+        return tcs.Task;
+    }
+
+    public static async Task WhenAllWithThrottling(IEnumerable<Task> tasks, int maxDegreeOfParallelism)
+    {
+        SemaphoreSlim semaphore = new SemaphoreSlim(maxDegreeOfParallelism, maxDegreeOfParallelism);
+
+        IEnumerable<Task> tasksWithSemaphore = tasks.Select(async task =>
+        {
+            await semaphore.WaitAsync();
+
+            try
+            {
+                await task;
+            }
+            finally
+            {
+                semaphore.Release();
+            }
+        });
+
+        await Task.WhenAll(tasksWithSemaphore);
+    }
+
+    public static async Task WhenAllWithProgress(IEnumerable<Task> tasks, IProgress<double> progress)
+    {
+        int totalTasks = tasks.Count();
+        int completedTasks = 0;
+
+        foreach (Task task in tasks)
+        {
+            await task;
+            completedTasks++;
+            progress.Report((double)completedTasks / totalTasks);
+        }
+    }
+
     public static void FireAndForget(this Task task, Action<Exception> errorHandler = null!)
     {
         task.ContinueWith(t =>

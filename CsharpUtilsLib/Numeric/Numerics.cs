@@ -2,6 +2,32 @@ namespace CsharpUtilsLib.Numeric;
 
 public static class Numerics
 {
+    public static double CalculateLoanCost(double principal, double interestRate, int numYears)
+    {
+        int numPeriods = numYears * 12;
+        double monthlyInterestRate = interestRate / 1200; // divide by 100 to convert to decimal and by 12 to get the monthly fee
+        double loanCost = principal * Math.Pow(1 + monthlyInterestRate, numPeriods) * monthlyInterestRate / (Math.Pow(1 + monthlyInterestRate, numPeriods) - 1);
+
+        return loanCost;
+    }
+
+    public static double CalculateNetPresentValue(double discountRate, params double[] cashFlows)
+    {
+        if (cashFlows.ListIsNullOrEmpty())
+        {
+            return 0;
+        }
+
+        double npv = -cashFlows[0];
+
+        for (int i = 1; i < cashFlows.Length; i++)
+        {
+            npv += cashFlows[i] / Math.Pow(1 + discountRate, i);
+        }
+
+        return npv;
+    }
+
     public static int GetLongestSequence(int[] numbers)
     {
         int maxLength = 0;

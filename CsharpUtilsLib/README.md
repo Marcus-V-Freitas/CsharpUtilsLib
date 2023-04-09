@@ -159,6 +159,8 @@
 * **Numerics**
 
 > Operations with numbers:
+  >- CalculateLoanCost
+  >- CalculateNetPresentValue
   >- GetLongestSequence
   >- RandomNumbers
   >- IsInRange
@@ -173,7 +175,7 @@
 
  ---
  
-* **Reflecions**
+* **Reflections**
 
 > Operations with reflection:
   >- GetDisplayName
@@ -275,6 +277,9 @@
 * **Tasks**
 
 > Operations with tasks:
+  >- WhenAnyWithCompletionSource
+  >- WhenAllWithThrottling
+  >- WhenAllWithProgress
   >- FireAndForget
   >- Retry
   >- OnFailure
