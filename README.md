@@ -35,7 +35,11 @@
   >- BubbleSort
   >- MostFrequent
   >- DictionaryIsNullOrEmpty
+  >- DictionaryIsNull
+  >- DictionaryIsEmpty
   >- ListIsNullOrEmpty
+  >- ListIsNull
+  >- ListIsEmpty
   >- AddIfNotNull (ICollection, IDictionary)
   >- AddOrChangeValue
   >- AddOrChangeValueByIndex
@@ -43,6 +47,10 @@
   >- AddRangeIfNotNullOrEmpty
   >- TryGetValue (IDictionary, Arrays, IList, KeyValuePair)
   >- ToNullList
+  >- AddIfNotEmptyOrNull
+  >- KeyValueIsNullOrEmpty
+  >- ToDefaultListIfNull
+  >- ToDistinctList
   
 ---
   
@@ -83,8 +91,11 @@
 ---
 
 * **Extensions**
+
   >- GetRandom
   >- With
+  >- Clone
+  >- ConvertTo
 
 ---
 
@@ -108,6 +119,10 @@
   >- Geolocation (class)
   >- English Dictionary (class)
   >- Currency Converter (class)
+  >- Correios Tracking (class)
+  >- Correios Shipping (class)
+  >- IBGE News (class)
+  >- Inflation (class)
   
  ---
  
@@ -137,12 +152,13 @@
 
 > Operations with http requests:
   >- HttpWrapper (class)
+  >- IHttpWrapper (interface) 
  
  ---
  
 * **Numerics**
 
-> Operation with numbers:
+> Operations with numbers:
   >- GetLongestSequence
   >- RandomNumbers
   >- IsInRange
@@ -158,6 +174,8 @@
  ---
  
 * **Reflecions**
+
+> Operations with reflection:
   >- GetDisplayName
   >- DefaultConstructor
   >- CreateInstance
@@ -173,13 +191,32 @@
 
 ---
 
+* **SQL**
+
+> Operations with databases (Mysql, PostgreSql, SqlLite, SqlServer):
+  >- InsertWithId / InsertWithIdAsync
+  >- Insert / InsertAsync
+  >- Update / UpdateAsync
+  >- Delete / DeleteAsync
+  >- Exists / ExistsAsync
+  >- SelectOne / SelectOneAsync
+  >- Select / SelectAsync
+  >- ExecuteNonQuery / ExecuteNonQueryAsync
+  >- ExecuteScalar / ExecuteScalarAsync
+  >- ExecuteReader / ExecuteReaderAsync
+
+---
+
 * **Texts**
 
-> Operation with strings:
+> Operations with strings:
+  >- RemoveSpecialCharacters 
+  >- SplitStringWithoutNullOrEmpty
+  >- GenerateRandomPassword
   >- IsSequentialRepetition
   >- RemoveAllWhitespace
   >- MultiReplace
-  >- GetMostFrequentSeparator
+  >- GetMostFrequentSeparator  
   >- CountOcurrences
   >- RemoveDiacritics
   >- MatchFirstOcurrency
@@ -188,6 +225,7 @@
   >- GetUniqueKey
   >- RemoveDocumentMask
   >- ToTitleCase
+  >- ConvertToString
   >- SpecificSplit
   >- Count 
   >- OnlyNumbers
@@ -220,7 +258,7 @@
 
 * **Global**
 
-> Generic operations
+> Generic operations:
   >- IsValidEmail
   >- IsValidEAN
   >- IsValidIpAddress
@@ -229,5 +267,31 @@
 
 * **SystemResources**
 
-> Monitoring system resources (memory, cpu and time)
+> Monitoring system resources (memory, cpu and time):
   >- TaskMonitor (class)
+
+--- 
+
+* **Tasks**
+
+> Operations with tasks:
+  >- FireAndForget
+  >- Retry
+  >- OnFailure
+  >- WithTimeout
+  >- Fallback
+  >- TryAsync
+
+--- 
+
+* **XML**
+
+> Operations with xml:
+  >- GetElementValue
+  >- AddElement
+  >- GetAttributeValue
+  >- RemoveElement
+  >- ToXmlElement
+  >- ToObject
+  >- SerializeObjectToXml
+  >- DeserializeXmlToObject
