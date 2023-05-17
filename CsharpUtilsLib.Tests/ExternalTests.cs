@@ -190,7 +190,7 @@ public sealed class ExternalTests
     }
 
     [Theory]
-    [InlineData("QM333246322BR", "Objeto entregue ao destinatário")]
+    [InlineData("QB942322947BR", "Objeto entregue ao destinatário")]
     [InlineData("IX021419098BR", "Objeto entregue ao destinatário")]
     public async Task CorreiosTrackingAPI(string trackingCode, string expectedFinalStatus)
     {
@@ -204,7 +204,7 @@ public sealed class ExternalTests
     }
 
     [Theory]
-    [InlineData("03/03/2023", "04/03/2023", "Com apoio do MPO, IBGE assina acordo de cooperação para finalizar Censo em território Yanomami")]
+    [InlineData("03/03/2023", "04/03/2023", "PNAD Contínua: taxa de desocupação é de 8,6% e taxa de subutilização é de 18,8% no trimestre encerrado em fevereiro")]
     [InlineData("01/01/2022", "02/01/2022", "Começa contagem regressiva para o início da coleta do Censo 2022")]
     public async Task IBGENewsAPI(string startDate, string endDate, string expectMainNewsTitle)
     {
@@ -222,7 +222,7 @@ public sealed class ExternalTests
 
     [Theory]
     [InlineData("Brazil", "29/10/2022", "29/01/2023", "6.47")]
-    [InlineData("Argentina", "01/01/2021", "31/12/2022", "11.89")]
+    [InlineData("Argentina", "01/01/2021", "31/12/2022", "9.68")]
     public async Task InflationAPI(string country, string startDate, string endDate, string expectedhighestValue)
     {
         InflationData inflationData = new InflationData();

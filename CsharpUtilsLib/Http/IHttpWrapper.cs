@@ -2,24 +2,43 @@
 
 public interface IHttpWrapper
 {
+    HttpResponseHeaders ResponseHeaders { get; }
+    HttpStatusCode StatusCode { get; }
+    string ReasonPhrase { get; }
+    WebProxy Proxy { get; }
+    bool KeepAlive { get; set; }
+    Dictionary<string, string> Headers { get; set; }
+    List<KeyValuePair<string, string>> Cookies { get; set; }
     int TimeoutSeconds { get; set; }
     string RequestUri { get; }
     string ErrorMessage { get; }
-    HttpStatusCode StatusCode { get; }
-    HttpResponseHeaders Headers { get; }
-    Task<HtmlString> HtmlGET(string Url, List<KeyValuePair<string, string>> cookies = null!, Dictionary<string, string> headers = null!);
+    List<Cookie> ResponseCookies { get; }
 
-    Task<HtmlString> HtmlPOST(string Url, HttpContent postData = null!, List<KeyValuePair<string, string>> cookies = null!, Dictionary<string, string> headers = null!);
+    #region Specific Headers
 
-    Task<string> GET(string Url, List<KeyValuePair<string, string>> cookies = null!, Dictionary<string, string> headers = null!);
+    string UserAgent { get; set; }
+    string Accept { get; set; }
+    string Host { get; set; }
+    string Referrer { get; set; }
+    string AcceptEncoding { get; set; }
+    string Origin { get; set; }
+    string AcceptLanguage { get; set; }
 
-    Task<string> POST(string Url, HttpContent postData = null!, List<KeyValuePair<string, string>> cookies = null!, Dictionary<string, string> headers = null!);
+    #endregion
 
-    Task<string> PUT(string Url, HttpContent postData = null!, List<KeyValuePair<string, string>> cookies = null!, Dictionary<string, string> headers = null!);
+    Task<HtmlString> HtmlGET(string Url, bool lowerCaseKeepAlive = false);
 
-    Task<string> DELETE(string Url, List<KeyValuePair<string, string>> cookies = null!, Dictionary<string, string> headers = null!);
+    Task<HtmlString> HtmlPOST(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false);
 
-    Task<byte[]> BytesGET(string Url, List<KeyValuePair<string, string>> cookies = null!, Dictionary<string, string> headers = null!);
+    Task<string> GET(string Url, bool lowerCaseKeepAlive = false);
 
-    Task<byte[]> BytesPOST(string Url, HttpContent postData = null!, List<KeyValuePair<string, string>> cookies = null!, Dictionary<string, string> headers = null!);
+    Task<string> POST(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false);
+
+    Task<string> PUT(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false);
+
+    Task<string> DELETE(string Url, bool lowerCaseKeepAlive = false);
+
+    Task<byte[]> BytesGET(string Url, bool lowerCaseKeepAlive = false);
+
+    Task<byte[]> BytesPOST(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false);
 }

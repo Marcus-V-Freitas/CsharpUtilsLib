@@ -9,7 +9,11 @@ public abstract class BaseExternalData<T> where T : class
 
     public BaseExternalData()
     {
-        _http = new HttpWrapper();
+        _http = new HttpWrapper()
+        {
+            Headers = Headers,
+            Cookies = Cookies
+        };
     }
 
     public BaseExternalData(HttpWrapper http)
@@ -17,7 +21,7 @@ public abstract class BaseExternalData<T> where T : class
         _http = http;
     }
 
-    public virtual async Task<T> Request(string endpoint = null!, params string[] parameters)
+    protected virtual async Task<T> Request(string endpoint = null!, params string[] parameters)
     {
         if (parameters.ListIsNullOrEmpty())
         {
@@ -29,9 +33,9 @@ public abstract class BaseExternalData<T> where T : class
 
         if (typeof(T) == typeof(string))
         {
-            return (await _http.GET(url, Cookies, Headers) as T)!;
+            return (await _http.GET(url) as T)!;
         }
 
-        return await _http.GET<T>(url, Cookies, Headers);
+        return await _http.GET<T>(url);
     }
 }
