@@ -162,7 +162,7 @@ public sealed class HttpWrapper : IHttpWrapper, IDisposable
         {
             try
             {
-                using (HttpClient http = new(_httpClientHandler))
+                using (HttpClient http = new(_httpClientHandler, false))
                 {
                     using (HttpRequestMessage request = new(method, Url)
                     {
@@ -178,11 +178,11 @@ public sealed class HttpWrapper : IHttpWrapper, IDisposable
             }
             catch (TaskCanceledException ex)
             {
-                Console.WriteLine($"[{nameof(HttpWrapper)}][Timeout] - {ex.Message}");
+                ErrorMessage = $"[Timeout] - {ex.StackTrace}";
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[{nameof(HttpWrapper)}] - {ex.Message}");
+                ErrorMessage = $"[Internal Error] - {ex.StackTrace}";
             }
         }
         return null!;
@@ -205,18 +205,24 @@ public sealed class HttpWrapper : IHttpWrapper, IDisposable
 
     private void AddCookies(HttpRequestMessage request)
     {
-        if (_cookies.ListIsNullOrEmpty())
-        {
-            return;
-        }
-
         StringBuilder sb = new();
 
-        foreach (KeyValuePair<string, string> cookie in _cookies)
+        if (!_cookies.ListIsNullOrEmpty())
         {
-            if (!cookie.KeyValueIsNullOrEmpty())
+            foreach (KeyValuePair<string, string> cookie in _cookies)
             {
-                sb.Append($"{cookie.Key}={cookie.Value}; ");
+                if (!cookie.KeyValueIsNullOrEmpty())
+                {
+                    sb.Append($"{cookie.Key}={cookie.Value}; ");
+                }
+            }
+        }
+
+        if (!ResponseCookies.ListIsNullOrEmpty())
+        {
+            foreach (Cookie cookie in ResponseCookies)
+            {
+                sb.Append($"{cookie.Name}={cookie.Value}; ");
             }
         }
 
