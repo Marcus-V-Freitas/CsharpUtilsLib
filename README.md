@@ -193,7 +193,7 @@
 
 * **SQL**
 
-> Operations with databases (Mysql, PostgreSql, SqlLite, SqlServer):
+> Operations with databases (Mysql, PostgreSql, SqlLite, SqlServer and Oracle):
   >- InsertWithId / InsertWithIdAsync
   >- Insert / InsertAsync
   >- Update / UpdateAsync
