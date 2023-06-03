@@ -2,6 +2,29 @@ namespace CsharpUtilsLib.Tests;
 
 public sealed class ExternalTests
 {
+    [Fact]
+    public async Task PIXParticipantsApi()
+    {
+        PIXParticipantsData pixParticipantsData = new PIXParticipantsData();
+
+        var result = await pixParticipantsData.GetPixParticipants();
+
+        Assert.NotNull(result);
+        Assert.NotEmpty(result);
+    }
+
+    [Theory]
+    [InlineData("11", "SANTANA DE PARNAÍBA")]
+    [InlineData("31", "VIÇOSA")]
+    public async Task DDDsApi(string ddd, string expectContainsCity)
+    {
+        DDDData dddData = new DDDData();
+
+        var result = await dddData.GetDDDInfos(ddd);
+
+        Assert.Contains(expectContainsCity, result.Cities);
+    }
+
     [Theory]
     [InlineData("brazil", "Federative Republic of Brazil")]
     [InlineData("United States", "United States of America")]

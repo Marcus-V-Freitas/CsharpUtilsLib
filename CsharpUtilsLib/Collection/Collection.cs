@@ -87,57 +87,67 @@ public static class Collections
         return !source.Any();
     }
 
-    public static void AddIfNotEmptyOrNull(this List<string> source, string value)
+    public static bool AddIfNotEmptyOrNull(this List<string> source, string value)
     {
         if (!source.ListIsNull() && !string.IsNullOrEmpty(value))
         {
             source.Add(value);
+            return true;
         }
+
+        return false;
     }
 
-    public static void AddIfNotNull<T>(this ICollection<T> source, T item)
+    public static bool AddIfNotNull<T>(this ICollection<T> source, T item)
     {
         if (!source.ListIsNull() && item != null)
         {
             source.Add(item);
+            return true;
         }
+
+        return false;
     }
 
-    public static void AddIfNotNull<TKey, TValue>(this IDictionary<TKey, TValue> source, TKey key, TValue value)
+    public static bool AddIfNotNull<TKey, TValue>(this IDictionary<TKey, TValue> source, TKey key, TValue value)
     {
         if (!source.ListIsNull() && key != null && value != null)
         {
             source.Add(key, value);
+            return true;
         }
+
+        return false;
     }
 
-    public static void AddOrChangeValue<TKey, TValue>(this IDictionary<TKey, TValue> source, TKey key, TValue value)
+    public static bool AddOrChangeValue<TKey, TValue>(this IDictionary<TKey, TValue> source, TKey key, TValue value)
     {
         if (source.ListIsNull() || key == null || value == null)
         {
-            return;
+            return false;
         }
 
         if (source.ContainsKey(key))
         {
             source[key] = value;
+            return true;
         }
         else
         {
-            source.AddIfNotNull(key, value);
+            return source.AddIfNotNull(key, value);
         }
     }
 
-    public static void AddOrChangeValueByIndex<TKey, TValue>(this IDictionary<TKey, TValue> source, TValue value, int index)
+    public static bool AddOrChangeValueByIndex<TKey, TValue>(this IDictionary<TKey, TValue> source, TValue value, int index)
     {
         if (index < 0 || source.ListIsNull() || source.Count <= index)
         {
-            return;
+            return false;
         }
 
         TKey key = source.Keys.ElementAt(index);
 
-        source.AddOrChangeValue(key, value);
+        return source.AddOrChangeValue(key, value);
     }
 
     public static bool KeyValueIsNull<TKey, TValue>(this KeyValuePair<TKey, TValue> source)
@@ -150,15 +160,19 @@ public static class Collections
         return (string.IsNullOrEmpty(keyValuePair.Key) || string.IsNullOrEmpty(keyValuePair.Value));
     }
 
-    public static void AddRangeIfNotNullOrEmpty<T>(this ICollection<T> source, IEnumerable<T> items)
+    public static bool AddRangeIfNotNullOrEmpty<T>(this ICollection<T> source, IEnumerable<T> items)
     {
-        if (!source.ListIsNull() && !items.ListIsNullOrEmpty())
+        if (source.ListIsNull() || items.ListIsNullOrEmpty())
         {
-            foreach (var item in items)
-            {
-                source.AddIfNotNull(item);
-            }
+            return false;
         }
+
+        foreach (var item in items)
+        {
+            source.AddIfNotNull(item);
+        }
+
+        return true;
     }
 
     public static TValue TryGetValue<TKey, TValue>(this IDictionary<TKey, TValue> source, TKey key)

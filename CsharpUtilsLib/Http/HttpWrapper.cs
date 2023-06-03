@@ -116,6 +116,7 @@ public sealed class HttpWrapper : IHttpWrapper, IDisposable
         if (value == null)
         {
             _headers.Remove(key);
+            return;
         }
 
         _headers[key] = value!;
