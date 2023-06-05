@@ -9,7 +9,7 @@ public sealed class CompanyQsa
     public string NomeSocio { get; set; }
 
     [Display(Name = "Código do País"), JsonPropertyName("codigo_pais")]
-    public string CodigoPais { get; set; }
+    public int? CodigoPais { get; set; }
 
     [Display(Name = "Faixa Etária"), JsonPropertyName("faixa_etaria")]
     public string FaixaEtaria { get; set; }

@@ -76,6 +76,8 @@ public sealed class ExternalTests
     [Theory]
     [InlineData("33.014.556/0001-96", "LOJAS AMERICANAS S.A.")]
     [InlineData("00.000.000/0001-91", "BANCO DO BRASIL SA")]
+    [InlineData("17022554000192", "KATIA SILENE DOS SANTOS COMITRE 26466621812")]
+    [InlineData("17022840000158", "THE RIDE PARTICIPACOES LTDA")]
     public async Task CompaniesAPI(string cnpj, string expectedName)
     {
         CompaniesData companiesData = new CompaniesData();

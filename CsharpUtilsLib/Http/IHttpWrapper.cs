@@ -1,6 +1,6 @@
 ﻿namespace CsharpUtilsLib.Http;
 
-public interface IHttpWrapper
+public interface IHttpWrapper : IDisposable
 {
     HttpResponseHeaders ResponseHeaders { get; }
     HttpStatusCode StatusCode { get; }
@@ -30,6 +30,18 @@ public interface IHttpWrapper
 
     Task<HtmlString> HtmlPOST(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false);
 
+    Task<HtmlString> HtmlPUT(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false);
+
+    Task<HtmlString> HtmlDELETE(string Url, bool lowerCaseKeepAlive = false);
+
+    Task<T> GET<T>(string Url, bool lowerCaseKeepAlive = false) where T : class;
+
+    Task<T> POST<T>(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false) where T : class;
+    
+    Task<T> PUT<T>(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false) where T : class;
+    
+    Task<T> DELETE<T>(string Url, bool lowerCaseKeepAlive = false) where T : class;
+
     Task<string> GET(string Url, bool lowerCaseKeepAlive = false);
 
     Task<string> POST(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false);
@@ -41,4 +53,8 @@ public interface IHttpWrapper
     Task<byte[]> BytesGET(string Url, bool lowerCaseKeepAlive = false);
 
     Task<byte[]> BytesPOST(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false);
+
+    Task<byte[]> BytesPUT(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false);
+
+    Task<byte[]> BytesDELETE(string Url, bool lowerCaseKeepAlive = false);
 }

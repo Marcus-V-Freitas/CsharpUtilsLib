@@ -1,6 +1,6 @@
 namespace CsharpUtilsLib.Http;
 
-public sealed class HttpWrapper : IHttpWrapper, IDisposable
+public sealed class HttpWrapper : IHttpWrapper
 {
     private readonly HttpClientHandler _httpClientHandler;
     private readonly CookieContainer _cookiesContainer = new();
@@ -48,62 +48,108 @@ public sealed class HttpWrapper : IHttpWrapper, IDisposable
 
     public async Task<HtmlString> HtmlGET(string Url, bool lowerCaseKeepAlive = false)
     {
-        var (content, _) = await SendResquest(HttpMethod.Get, Url, postData: null!, lowerCaseKeepAlive);
-        return HtmlString.Instance(content);
+        string htmlResponse = await GET(Url, lowerCaseKeepAlive);
+        return SecureHtmlStringReturn(htmlResponse);
     }
 
     public async Task<HtmlString> HtmlPOST(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false)
     {
-        var (content, _) = await SendResquest(HttpMethod.Post, Url, postData, lowerCaseKeepAlive);
-        return HtmlString.Instance(content);
+        string htmlResponse = await POST(Url, postData, lowerCaseKeepAlive);
+        return SecureHtmlStringReturn(htmlResponse);
+    }
+
+    public async Task<HtmlString> HtmlPUT(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false)
+    {
+        string htmlResponse = await PUT(Url, postData, lowerCaseKeepAlive);
+        return SecureHtmlStringReturn(htmlResponse);
+    }
+
+    public async Task<HtmlString> HtmlDELETE(string Url, bool lowerCaseKeepAlive = false)
+    {
+        string htmlResponse = await DELETE(Url, lowerCaseKeepAlive);
+        return SecureHtmlStringReturn(htmlResponse);
     }
 
     public async Task<T> GET<T>(string Url, bool lowerCaseKeepAlive = false) where T : class
     {
         string jsonResponse = await GET(Url, lowerCaseKeepAlive);
-        return (string.IsNullOrEmpty(jsonResponse) ? null : JsonSerializer.Deserialize<T>(jsonResponse))!;
+        return SecureJsonObjectReturn<T>(jsonResponse);
     }
 
     public async Task<T> POST<T>(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false) where T : class
     {
         string jsonResponse = await POST(Url, postData: postData, lowerCaseKeepAlive);
-        return (string.IsNullOrEmpty(jsonResponse) ? null : JsonSerializer.Deserialize<T>(jsonResponse))!;
+        return SecureJsonObjectReturn<T>(jsonResponse);
+    }
+
+    public async Task<T> PUT<T>(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false) where T : class
+    {
+        string jsonResponse = await PUT(Url, postData: postData, lowerCaseKeepAlive);
+        return SecureJsonObjectReturn<T>(jsonResponse);
+    }
+
+    public async Task<T> DELETE<T>(string Url, bool lowerCaseKeepAlive = false) where T : class
+    {
+        string jsonResponse = await DELETE(Url, lowerCaseKeepAlive);
+        return SecureJsonObjectReturn<T>(jsonResponse);
     }
 
     public async Task<string> GET(string Url, bool lowerCaseKeepAlive = false)
     {
-        var (content, _) = await SendResquest(HttpMethod.Get, Url, postData: null!, lowerCaseKeepAlive);
+        var (content, _) = await SendRequest(HttpMethod.Get, Url, postData: null!, lowerCaseKeepAlive);
         return content;
     }
 
     public async Task<string> POST(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false)
     {
-        var (content, _) = await SendResquest(HttpMethod.Post, Url, postData, lowerCaseKeepAlive);
+        var (content, _) = await SendRequest(HttpMethod.Post, Url, postData, lowerCaseKeepAlive);
         return content;
     }
 
     public async Task<string> PUT(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false)
     {
-        var (content, _) = await SendResquest(HttpMethod.Put, Url, postData, lowerCaseKeepAlive);
+        var (content, _) = await SendRequest(HttpMethod.Put, Url, postData, lowerCaseKeepAlive);
         return content;
     }
 
     public async Task<string> DELETE(string Url, bool lowerCaseKeepAlive = false)
     {
-        var (content, _) = await SendResquest(HttpMethod.Delete, Url, postData: null!, lowerCaseKeepAlive);
+        var (content, _) = await SendRequest(HttpMethod.Delete, Url, postData: null!, lowerCaseKeepAlive);
         return content;
     }
 
     public async Task<byte[]> BytesGET(string Url, bool lowerCaseKeepAlive = false)
     {
-        var (_, bytes) = await SendResquest(HttpMethod.Get, Url, postData: null!, lowerCaseKeepAlive);
+        var (_, bytes) = await SendRequest(HttpMethod.Get, Url, postData: null!, lowerCaseKeepAlive);
         return bytes;
     }
 
     public async Task<byte[]> BytesPOST(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false)
     {
-        var (_, bytes) = await SendResquest(HttpMethod.Post, Url, postData, lowerCaseKeepAlive);
+        var (_, bytes) = await SendRequest(HttpMethod.Post, Url, postData, lowerCaseKeepAlive);
         return bytes;
+    }
+
+    public async Task<byte[]> BytesPUT(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false)
+    {
+        var (_, bytes) = await SendRequest(HttpMethod.Put, Url, postData, lowerCaseKeepAlive);
+        return bytes;
+    }
+
+    public async Task<byte[]> BytesDELETE(string Url, bool lowerCaseKeepAlive = false)
+    {
+        var (_, bytes) = await SendRequest(HttpMethod.Delete, Url, postData: null!, lowerCaseKeepAlive);
+        return bytes;
+    }
+
+    private static HtmlString SecureHtmlStringReturn(string htmlResponse)
+    {
+        return (string.IsNullOrEmpty(htmlResponse) ? null : HtmlString.Instance(htmlResponse))!;
+    }
+
+    private static T SecureJsonObjectReturn<T>(string jsonResponse) where T : class
+    {
+        return (string.IsNullOrEmpty(jsonResponse) ? null : JsonSerializer.Deserialize<T>(jsonResponse))!;
     }
 
     private string GetHeaderValue(string key)
@@ -233,7 +279,7 @@ public sealed class HttpWrapper : IHttpWrapper, IDisposable
         }
     }
 
-    private async Task<(string content, byte[] bytes)> SendResquest(HttpMethod method,
+    private async Task<(string content, byte[] bytes)> SendRequest(HttpMethod method,
                                                                     string Url,
                                                                     HttpContent postData,
                                                                     bool lowerCaseKeepAlive)
@@ -268,6 +314,6 @@ public sealed class HttpWrapper : IHttpWrapper, IDisposable
 
     public void Dispose()
     {
-        _httpClientHandler.Dispose();
+        _httpClientHandler?.Dispose();
     }
 }

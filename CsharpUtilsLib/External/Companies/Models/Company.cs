@@ -57,7 +57,7 @@ public sealed class Company
     public string NomeFantasia { get; set; }
 
     [Display(Name = "Capital Social"), JsonPropertyName("capital_social")]
-    public long CapitalSocial { get; set; }
+    public double? CapitalSocial { get; set; }
 
     [Display(Name = "Telefone 1"), JsonPropertyName("ddd_telefone_1")]
     public string DddTelefone1 { get; set; }
