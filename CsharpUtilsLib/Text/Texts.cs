@@ -2,6 +2,22 @@
 
 public static class Texts
 {
+    public static Encoding GetEncodingByName(string encodingName, Encoding defaultEncoding = null!)
+    {
+        defaultEncoding ??= Encoding.Default;
+
+        if (string.IsNullOrEmpty(encodingName))
+        {
+            return defaultEncoding;
+        }
+
+        Encoding encoding = Encoding.GetEncodings()?
+                                    .FirstOrDefault(e => e.Name.Equals(encodingName, StringComparison.OrdinalIgnoreCase))?
+                                    .GetEncoding()!;
+
+        return encoding ?? defaultEncoding;
+    }
+
     public static string RemoveSpecialCharacters(this string text)
     {
         if (string.IsNullOrEmpty(text))

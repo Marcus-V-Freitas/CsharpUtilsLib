@@ -2,11 +2,24 @@ namespace CsharpUtilsLib.Http;
 
 public sealed class HttpWrapper : IHttpWrapper
 {
+    private const string _defaultContentType = "application/x-www-form-urlencoded";
     private readonly HttpClientHandler _httpClientHandler;
     private readonly CookieContainer _cookiesContainer = new();
     private Dictionary<string, string> _headers = new();
     private List<KeyValuePair<string, string>> _cookies = new();
+    private Encoding _encoding = Encoding.Default;
 
+    public Encoding Encoding
+    {
+        get => _encoding;
+        set
+        {
+            _encoding = value ?? Encoding.Default;
+            SetHeaderValue("Accept-Charset", _encoding.HeaderName);
+        }
+    }
+
+    public string ContentType { get; set; } = _defaultContentType;
     public bool KeepAlive { get; set; }
     public int TimeoutSeconds { get; set; } = 30;
     public WebProxy Proxy { get; private set; }
@@ -14,6 +27,8 @@ public sealed class HttpWrapper : IHttpWrapper
     public string ReasonPhrase { get; private set; } = null!;
     public string RequestUri { get; private set; } = null!;
     public string ErrorMessage { get; private set; } = null!;
+    public long? ContentLength { get; private set; } = null!;
+    public string Version { get; private set; } = null!;
     public Dictionary<string, string> Headers { get => _headers; set => _headers = value; }
     public List<KeyValuePair<string, string>> Cookies { get => _cookies; set => _cookies = value; }
     public HttpResponseHeaders ResponseHeaders { get; private set; }
@@ -21,6 +36,8 @@ public sealed class HttpWrapper : IHttpWrapper
 
     #region Specific Headers
 
+    public string AcceptCharset { get => GetHeaderValue("Accept-Charset"); set => Encoding = Texts.GetEncodingByName(value); }
+    public string Authorization { get => GetHeaderValue("Authorization"); set => SetHeaderValue("Authorization", value); }
     public string UserAgent { get => GetHeaderValue("User-Agent"); set => SetHeaderValue("User-Agent", value); }
     public string Accept { get => GetHeaderValue("Accept"); set => SetHeaderValue("Accept", value); }
     public string Host { get => GetHeaderValue("Host"); set => SetHeaderValue("Host", value); }
@@ -34,6 +51,7 @@ public sealed class HttpWrapper : IHttpWrapper
     public HttpWrapper(int timeoutSeconds = 30, bool allowAutoRedirect = true, WebProxy proxy = null!)
     {
         TimeoutSeconds = timeoutSeconds;
+        Encoding = Encoding.Default;
 
         _httpClientHandler = new HttpClientHandler()
         {
@@ -43,6 +61,7 @@ public sealed class HttpWrapper : IHttpWrapper
             AllowAutoRedirect = allowAutoRedirect
         };
 
+        RegisterEncodings();
         FillWebProxy(proxy);
     }
 
@@ -58,10 +77,22 @@ public sealed class HttpWrapper : IHttpWrapper
         return SecureHtmlStringReturn(htmlResponse);
     }
 
+    public async Task<HtmlString> HtmlPOST(string Url, string rawPostData = null!, bool lowerCaseKeepAlive = false)
+    {
+        StringContent content = CreateContentByRawPostData(rawPostData);
+        return await HtmlPOST(Url, content, lowerCaseKeepAlive);
+    }
+
     public async Task<HtmlString> HtmlPUT(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false)
     {
         string htmlResponse = await PUT(Url, postData, lowerCaseKeepAlive);
         return SecureHtmlStringReturn(htmlResponse);
+    }
+
+    public async Task<HtmlString> HtmlPUT(string Url, string rawPostData = null!, bool lowerCaseKeepAlive = false)
+    {
+        StringContent content = CreateContentByRawPostData(rawPostData);
+        return await HtmlPUT(Url, content, lowerCaseKeepAlive);
     }
 
     public async Task<HtmlString> HtmlDELETE(string Url, bool lowerCaseKeepAlive = false)
@@ -82,10 +113,22 @@ public sealed class HttpWrapper : IHttpWrapper
         return SecureJsonObjectReturn<T>(jsonResponse);
     }
 
+    public async Task<T> POST<T>(string Url, string rawPostData = null!, bool lowerCaseKeepAlive = false) where T : class
+    {
+        StringContent content = CreateContentByRawPostData(rawPostData);
+        return await POST<T>(Url, content, lowerCaseKeepAlive);
+    }
+
     public async Task<T> PUT<T>(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false) where T : class
     {
         string jsonResponse = await PUT(Url, postData: postData, lowerCaseKeepAlive);
         return SecureJsonObjectReturn<T>(jsonResponse);
+    }
+
+    public async Task<T> PUT<T>(string Url, string rawPostData = null!, bool lowerCaseKeepAlive = false) where T : class
+    {
+        StringContent content = CreateContentByRawPostData(rawPostData);
+        return await PUT<T>(Url, content, lowerCaseKeepAlive);
     }
 
     public async Task<T> DELETE<T>(string Url, bool lowerCaseKeepAlive = false) where T : class
@@ -106,10 +149,22 @@ public sealed class HttpWrapper : IHttpWrapper
         return content;
     }
 
+    public async Task<string> POST(string Url, string rawPostData = null!, bool lowerCaseKeepAlive = false)
+    {
+        StringContent content = CreateContentByRawPostData(rawPostData);
+        return await POST(Url, content, lowerCaseKeepAlive);
+    }
+
     public async Task<string> PUT(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false)
     {
         var (content, _) = await SendRequest(HttpMethod.Put, Url, postData, lowerCaseKeepAlive);
         return content;
+    }
+
+    public async Task<string> PUT(string Url, string rawPostData = null!, bool lowerCaseKeepAlive = false)
+    {
+        StringContent content = CreateContentByRawPostData(rawPostData);
+        return await PUT(Url, content, lowerCaseKeepAlive);
     }
 
     public async Task<string> DELETE(string Url, bool lowerCaseKeepAlive = false)
@@ -130,16 +185,34 @@ public sealed class HttpWrapper : IHttpWrapper
         return bytes;
     }
 
+    public async Task<byte[]> BytesPOST(string Url, string rawPostData = null!, bool lowerCaseKeepAlive = false)
+    {
+        StringContent content = CreateContentByRawPostData(rawPostData);
+        return await BytesPOST(Url, content, lowerCaseKeepAlive);
+    }
+
     public async Task<byte[]> BytesPUT(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false)
     {
         var (_, bytes) = await SendRequest(HttpMethod.Put, Url, postData, lowerCaseKeepAlive);
         return bytes;
     }
 
+    public async Task<byte[]> BytesPUT(string Url, string rawPostData = null!, bool lowerCaseKeepAlive = false)
+    {
+        StringContent content = CreateContentByRawPostData(rawPostData);
+        return await BytesPUT(Url, content, lowerCaseKeepAlive);
+    }
+
     public async Task<byte[]> BytesDELETE(string Url, bool lowerCaseKeepAlive = false)
     {
         var (_, bytes) = await SendRequest(HttpMethod.Delete, Url, postData: null!, lowerCaseKeepAlive);
         return bytes;
+    }
+
+    private static void RegisterEncodings()
+    {
+        EncodingProvider provider = CodePagesEncodingProvider.Instance;
+        Encoding.RegisterProvider(provider);
     }
 
     private static HtmlString SecureHtmlStringReturn(string htmlResponse)
@@ -150,6 +223,11 @@ public sealed class HttpWrapper : IHttpWrapper
     private static T SecureJsonObjectReturn<T>(string jsonResponse) where T : class
     {
         return (string.IsNullOrEmpty(jsonResponse) ? null : JsonSerializer.Deserialize<T>(jsonResponse))!;
+    }
+
+    private StringContent CreateContentByRawPostData(string postData)
+    {
+        return new(postData, Encoding, ContentType);
     }
 
     private string GetHeaderValue(string key)
@@ -209,13 +287,17 @@ public sealed class HttpWrapper : IHttpWrapper
         {
             try
             {
-                using (HttpClient http = new(_httpClientHandler, false))
+                using (HttpClient http = new(_httpClientHandler, disposeHandler: false)
+                {
+                    Timeout = TimeSpan.FromSeconds(TimeoutSeconds)
+                })
                 {
                     using (HttpRequestMessage request = new(method, Url)
                     {
                         Content = postData
                     })
                     {
+                        FillContentType(postData);
                         AddCookies(request);
                         AddHeaders(http, lowerCaseKeepAlive);
 
@@ -279,11 +361,17 @@ public sealed class HttpWrapper : IHttpWrapper
         }
     }
 
+    private void FillContentType(HttpContent content)
+    {
+        ContentType = content?.Headers?.ContentType?.MediaType! ?? _defaultContentType;
+        AcceptCharset = content?.Headers?.ContentType?.CharSet!;
+    }
+
     private async Task<(string content, byte[] bytes)> SendRequest(HttpMethod method,
                                                                     string Url,
                                                                     HttpContent postData,
                                                                     bool lowerCaseKeepAlive)
-    {
+    {        
         using (HttpResponseMessage response = await ReponseMessage(method, Url, postData, lowerCaseKeepAlive))
         {
             if (response == null)
@@ -295,14 +383,16 @@ public sealed class HttpWrapper : IHttpWrapper
             StatusCode = response.StatusCode;
             ReasonPhrase = response.ReasonPhrase!;
             ResponseHeaders = response.Headers;
-            ResponseCookies = _cookiesContainer?.GetCookies(new Uri(Url))?.Cast<Cookie>()?.ToList()!;
+            ContentLength = bytes?.LongLength;
+            Version = response?.Version?.ToString()!;
+            ResponseCookies = _cookiesContainer?.GetCookies(Url)!;
 
             await Task.Delay(3000);
 
             if (response.IsSuccessStatusCode)
             {
                 ErrorMessage = string.Empty;
-                return (content, bytes);
+                return (content, bytes)!;
             }
             else
             {

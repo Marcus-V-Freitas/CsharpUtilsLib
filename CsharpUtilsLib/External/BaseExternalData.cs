@@ -1,6 +1,6 @@
 namespace CsharpUtilsLib.External;
 
-public abstract class BaseExternalData<T> where T : class
+public abstract class BaseExternalData<T> : IDisposable where T : class
 {
     protected readonly HttpWrapper _http;
     protected abstract string Url { get; }
@@ -37,5 +37,10 @@ public abstract class BaseExternalData<T> where T : class
         }
 
         return await _http.GET<T>(url);
+    }
+
+    public void Dispose()
+    {
+        _http?.Dispose();
     }
 }

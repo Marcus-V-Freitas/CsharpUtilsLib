@@ -2,6 +2,18 @@ namespace CsharpUtilsLib.Web;
 
 public static class Web
 {
+    public static List<Cookie> GetCookies(this CookieContainer cookiesContainer, string url)
+    {
+        if (cookiesContainer == null || string.IsNullOrEmpty(url))
+        {
+            return null!;
+        }
+
+        return cookiesContainer?.GetCookies(new Uri(url))?
+                                .Cast<Cookie>()?
+                                .ToList()!;
+    }
+
     public static int Pagination(int totalRecords, int recordsPerPage)
     {
         return (totalRecords + recordsPerPage - 1) / recordsPerPage;
@@ -56,6 +68,26 @@ public static class Web
 
         var uri = new Uri(url);
         return QueryHelpers.ParseQuery(uri.Query);
+    }
+
+    public static string ToRawPostData(this Dictionary<string, string> postDataParams)
+    {
+        string tempValueToEmptySpaces = "?<!<!>!>?";
+
+        if (postDataParams.DictionaryIsEmpty())
+        {
+            return null!;
+        }
+
+        foreach (string key in postDataParams.Keys)
+        {
+            string value = postDataParams[key]?.Replace(" ", tempValueToEmptySpaces)!;
+            postDataParams[key] = value;
+        }
+
+        string postData = QueryHelpers.AddQueryString(string.Empty, postDataParams).TrimStart('?');
+
+        return postData.Replace(tempValueToEmptySpaces, "+");
     }
 
     public static string AddQueryString(string url, string queryString, string value)
