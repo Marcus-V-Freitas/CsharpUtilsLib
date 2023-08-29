@@ -2,6 +2,11 @@ namespace CsharpUtilsLib.Date;
 
 public static class Dates
 {
+    public static DateTime ConvertMillisecondsToDateTime(this long milliseconds)
+    {
+        return DateTimeOffset.FromUnixTimeMilliseconds(milliseconds).DateTime;
+    }
+
     public static DateTime ConvertToDatetime(this string value, string format = "dd/MM/yyyy", string culture = "", DateTime defaultValue = default)
     {
         CultureInfo cultureInfo = CultureInfo.InvariantCulture;

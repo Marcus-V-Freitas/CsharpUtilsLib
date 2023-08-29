@@ -73,30 +73,62 @@ public abstract class BaseSqlHelper
 
     public T SelectOne<T>(Query query)
     {
-        using QueryFactory factory = new QueryFactory(ConfigureConnection(), _compiler);
+        using DbConnection conn = ConfigureConnection();
+        using QueryFactory factory = new QueryFactory(conn, _compiler);
 
-        return factory.FirstOrDefault<T>(query, timeout: Timeout);
+        if (!CheckIfTypeIsComplex(query))
+        {
+            return factory.FirstOrDefault<T>(query, timeout: Timeout);
+        }
+
+        query = ConvertQueryToXQuery(factory, query);
+        dynamic entity = factory.FirstOrDefault<dynamic>(query, timeout: Timeout);
+        return ConvertDynamicToEntity<T>(entity);
     }
 
     public async Task<T> SelectOneAsync<T>(Query query, CancellationToken token = default)
     {
-        using QueryFactory factory = new QueryFactory(await ConfigureConnectionAsync(token), _compiler);
+        using DbConnection conn = await ConfigureConnectionAsync(token);
+        using QueryFactory factory = new QueryFactory(conn, _compiler);
 
-        return await factory.FirstOrDefaultAsync<T>(query, timeout: Timeout, cancellationToken: token);
+        if (!CheckIfTypeIsComplex(query))
+        {
+            return await factory.FirstOrDefaultAsync<T>(query, timeout: Timeout, cancellationToken: token);
+        }
+
+        query = ConvertQueryToXQuery(factory, query);
+        dynamic entity = await factory.FirstOrDefaultAsync<dynamic>(query, timeout: Timeout, cancellationToken: token);
+        return ConvertDynamicToEntity<T>(entity);
     }
 
     public IEnumerable<T> Select<T>(Query query)
     {
-        using QueryFactory factory = new QueryFactory(ConfigureConnection(), _compiler);
+        using DbConnection conn = ConfigureConnection();
+        using QueryFactory factory = new QueryFactory(conn, _compiler);
 
-        return factory.Get<T>(query, timeout: Timeout);
+        if (!CheckIfTypeIsComplex(query))
+        {
+            return factory.Get<T>(query, timeout: Timeout);
+        }
+
+        query = ConvertQueryToXQuery(factory, query);
+        IEnumerable<dynamic> entities = factory.Get<dynamic>(query, timeout: Timeout);
+        return ConvertDynamicToEntity<IEnumerable<T>>(entities);
     }
 
     public async Task<IEnumerable<T>> SelectAsync<T>(Query query, CancellationToken token = default)
     {
-        using QueryFactory factory = new QueryFactory(await ConfigureConnectionAsync(token), _compiler);
+        using DbConnection conn = await ConfigureConnectionAsync(token);
+        using QueryFactory factory = new QueryFactory(conn, _compiler);
 
-        return await factory.GetAsync<T>(query, timeout: Timeout, cancellationToken: token);
+        if (!CheckIfTypeIsComplex(query))
+        {
+            return await factory.GetAsync<T>(query, timeout: Timeout, cancellationToken: token);
+        }
+
+        query = ConvertQueryToXQuery(factory, query);
+        IEnumerable<dynamic> entities = await factory.GetAsync<dynamic>(query, timeout: Timeout, cancellationToken: token);
+        return ConvertDynamicToEntity<IEnumerable<T>>(entities);
     }
 
     public async Task<int> ExecuteNonQueryAsync(Query query, CancellationToken token = default)
@@ -164,4 +196,44 @@ public abstract class BaseSqlHelper
     protected abstract Task<DbConnection> ConfigureConnectionAsync(CancellationToken token);
 
     protected abstract DbCommand ConfigureCommand(Query query, DbConnection connection);
+
+    protected virtual Query ConvertQueryToXQuery(QueryFactory factory, Query query)
+    {
+        query = factory.FromQuery(query);
+
+        if (query.Includes.ListIsNullOrEmpty())
+        {
+            return query;
+        }
+
+        foreach (int index in Enumerable.Range(0, query.Includes.Count))
+        {
+            query.Includes[index].Query = ConvertQueryToXQuery(factory, query.Includes[index].Query);
+        }
+
+        return query;
+    }
+
+    protected virtual T ConvertDynamicToEntity<T>(object entity)
+    {
+        return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(Newtonsoft.Json.JsonConvert.SerializeObject(entity))!;
+    }
+
+    protected virtual bool CheckIfTypeIsComplex(Query query)
+    {
+        if (query.Includes.ListIsNullOrEmpty())
+        {
+            return false;
+        }
+
+        foreach (Include include in query.Includes)
+        {
+            if (CheckIfTypeIsComplex(include.Query))
+            {
+                return true;
+            }
+        }
+
+        return true;
+    }
 }

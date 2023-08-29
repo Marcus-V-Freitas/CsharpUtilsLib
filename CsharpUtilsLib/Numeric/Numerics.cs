@@ -2,6 +2,46 @@ namespace CsharpUtilsLib.Numeric;
 
 public static class Numerics
 {
+    public static int ConvertToInt(this string text, int defaultValue = default)
+    {
+        return (int)ConvertToNullInt(text, defaultValue)!;
+    }
+
+    public static int? ConvertToNullInt(this string text, int? defaultValue = default)
+    {
+        if (string.IsNullOrEmpty(text))
+        {
+            return defaultValue;
+        }
+
+        if (int.TryParse(Texts.OnlyNumbers(text), NumberStyles.Any, CultureInfo.InvariantCulture, out int number))
+        {
+            return number;
+        }
+
+        return defaultValue;
+    }
+
+    public static double ConvertToDouble(this string text, double defaultValue = default)
+    {
+        return (double)ConvertToNullDouble(text, defaultValue)!;
+    }
+
+    public static double? ConvertToNullDouble(this string text, double? defaultValue = default)
+    {
+        if (string.IsNullOrEmpty(text))
+        {
+            return defaultValue;
+        }
+
+        if (double.TryParse(Texts.OnlyNumbers(text), NumberStyles.Any, CultureInfo.InvariantCulture, out double number))
+        {
+            return number;
+        }
+
+        return defaultValue;
+    }
+
     public static double CalculateLoanCost(double principal, double interestRate, int numYears)
     {
         int numPeriods = numYears * 12;
