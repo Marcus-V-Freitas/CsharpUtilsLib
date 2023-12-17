@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFrameworks>net7.0;net8.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<id>CsharpUtilsLib</id>
 		<PackageIcon>icon.png</PackageIcon>
-		<version>1.0.22</version>
+		<version>1.0.23</version>
 		<authors>Marcus-V-Freitas</authors>
 		<owners>Marcus-V-Freitas</owners>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>

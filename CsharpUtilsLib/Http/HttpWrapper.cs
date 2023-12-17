@@ -55,6 +55,7 @@ public sealed class HttpWrapper : IHttpWrapper
 
         _httpClientHandler = new HttpClientHandler()
         {
+            AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate | DecompressionMethods.Brotli,
             SslProtocols = SslProtocols.Ssl3 | SslProtocols.Tls | SslProtocols.Tls11 | SslProtocols.Tls12 | SslProtocols.Tls13,
             ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true,
             CookieContainer = _cookiesContainer,
@@ -227,7 +228,11 @@ public sealed class HttpWrapper : IHttpWrapper
 
     private StringContent CreateContentByRawPostData(string postData)
     {
-        return new(postData, Encoding, ContentType);
+        StringContent content = new(postData, Encoding);
+        content.Headers.Remove("Content-Type");
+        content.Headers.TryAddWithoutValidation("Content-Type", ContentType);
+
+        return content;
     }
 
     private string GetHeaderValue(string key)
@@ -371,7 +376,7 @@ public sealed class HttpWrapper : IHttpWrapper
                                                                     string Url,
                                                                     HttpContent postData,
                                                                     bool lowerCaseKeepAlive)
-    {        
+    {
         using (HttpResponseMessage response = await ReponseMessage(method, Url, postData, lowerCaseKeepAlive))
         {
             if (response == null)
