@@ -22,19 +22,19 @@ public static class Numerics
         return defaultValue;
     }
 
-    public static double ConvertToDouble(this string text, double defaultValue = default)
+    public static double ConvertToDouble(this string text, double defaultValue = default, bool onlyNumbers = true)
     {
-        return (double)ConvertToNullDouble(text, defaultValue)!;
+        return (double)ConvertToNullDouble(text, defaultValue, onlyNumbers)!;
     }
 
-    public static double? ConvertToNullDouble(this string text, double? defaultValue = default)
+    public static double? ConvertToNullDouble(this string text, double? defaultValue = default, bool onlyNumbers = true)
     {
         if (string.IsNullOrEmpty(text))
         {
             return defaultValue;
         }
 
-        if (double.TryParse(Texts.OnlyNumbers(text), NumberStyles.Any, CultureInfo.InvariantCulture, out double number))
+        if (double.TryParse(onlyNumbers ? text.OnlyNumbers() : text, NumberStyles.Any, CultureInfo.InvariantCulture, out double number))
         {
             return number;
         }
@@ -191,4 +191,38 @@ public static class Numerics
         return Math.Sqrt(sumOfSquares / values.Count());
     }
 
+    public static double Median(this IEnumerable<double> numbers)
+    {
+        List<double> sortedNumbers = numbers.OrderBy(n => n).ToList();
+        int count = sortedNumbers.Count;
+
+        if (count % 2 == 0)
+        {
+            int middle = count / 2;
+            return (sortedNumbers[middle - 1] + sortedNumbers[middle]) / 2.0;
+        }
+        else
+        {
+            return sortedNumbers[count / 2];
+        }
+    }
+
+    public static double Average<T>(this IEnumerable<T> source, Func<T, double> selector)
+    {
+        if (source.ListIsNullOrEmpty())
+        {
+            return 0;
+        }
+
+        double sum = 0;
+        int count = 0;
+
+        foreach (T item in source)
+        {
+            sum += selector(item);
+            count++;
+        }
+
+        return count > 0 ? sum / count : 0;
+    }
 }

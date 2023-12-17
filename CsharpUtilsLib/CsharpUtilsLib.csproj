@@ -6,7 +6,7 @@
 		<Nullable>enable</Nullable>
 		<id>CsharpUtilsLib</id>
 		<PackageIcon>icon.png</PackageIcon>
-		<version>1.0.23</version>
+		<version>1.0.24</version>
 		<authors>Marcus-V-Freitas</authors>
 		<owners>Marcus-V-Freitas</owners>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>

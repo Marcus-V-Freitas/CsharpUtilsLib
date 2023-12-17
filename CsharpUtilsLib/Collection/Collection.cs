@@ -2,6 +2,34 @@ namespace CsharpUtilsLib.Collection;
 
 public static class Collections
 {
+    public static IDictionary<TKey, TValue> Merge<TKey, TValue>(this IDictionary<TKey, TValue> mainDictionary, IDictionary<TKey, TValue> otherDictionary)
+    {
+        foreach (KeyValuePair<TKey, TValue> pair in otherDictionary)
+        {
+            if (!mainDictionary.ContainsKey(pair.Key))
+            {
+                mainDictionary[pair.Key] = pair.Value;
+            }
+        }
+
+        return mainDictionary;
+    }
+
+    public static List<T> Filter<T>(this List<T> list, Func<T, bool> filterFunc)
+    {
+        List<T> filteredList = new List<T>();
+
+        foreach (var item in list)
+        {
+            if (filterFunc(item))
+            {
+                filteredList.Add(item);
+            }
+        }
+
+        return filteredList;
+    }
+
     public static string ConcatLists(this List<string> texts, string separator = "")
     {
         StringBuilder sb = new StringBuilder();

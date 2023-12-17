@@ -2,6 +2,19 @@ namespace CsharpUtilsLib.Date;
 
 public static class Dates
 {
+    public static int CalculateAge(this DateTime birthDate)
+    {
+        DateTime today = DateTime.Today;
+        int age = today.Year - birthDate.Year;
+
+        if (birthDate.Date > today.AddYears(-age))
+        {
+            age--;
+        }
+
+        return age;
+    }
+
     public static DateTime ConvertMillisecondsToDateTime(this long milliseconds)
     {
         return DateTimeOffset.FromUnixTimeMilliseconds(milliseconds).DateTime;
