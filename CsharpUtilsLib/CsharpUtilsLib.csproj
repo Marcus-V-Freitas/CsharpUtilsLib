@@ -6,7 +6,7 @@
 		<Nullable>enable</Nullable>
 		<id>CsharpUtilsLib</id>
 		<PackageIcon>icon.png</PackageIcon>
-		<version>1.0.24</version>
+		<version>1.0.25</version>
 		<authors>Marcus-V-Freitas</authors>
 		<owners>Marcus-V-Freitas</owners>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -14,7 +14,7 @@
 		<RepositoryUrl>https://github.com/Marcus-V-Freitas/CsharpUtilsLib</RepositoryUrl>
 		<description>Lib containing numerous functions to simplify the day to day development</description>
 		<copyright>Copyright 2023</copyright>
-		<FileVersion>1.0.22</FileVersion>
+		<FileVersion>1.0.25</FileVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -55,11 +55,13 @@
 		<PackageReference Include="MySql.Data" Version="8.0.32.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="Npgsql" Version="7.0.2" />
+		<PackageReference Include="ParquetSharp" Version="13.0.0" />
 		<PackageReference Include="sqlkata" Version="2.4.0" />
 		<PackageReference Include="sqlkata.Execution" Version="2.4.0" />
 		<PackageReference Include="System.Data.OracleClient" Version="1.0.8" />
 		<PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
 		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.117" />
+		<PackageReference Include="System.IO.pipelines" Version="8.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

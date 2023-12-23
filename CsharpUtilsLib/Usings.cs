@@ -1,4 +1,6 @@
+global using System.Buffers;
 global using System.Diagnostics;
+global using System.IO.Pipelines;
 global using System.Net.Http.Headers;
 global using System.Data.Common;
 global using System.Data.SqlClient;
@@ -68,3 +70,5 @@ global using Npgsql;
 global using SqlKata;
 global using SqlKata.Compilers;
 global using SqlKata.Execution;
+global using ParquetSharp;
+global using Encoding = System.Text.Encoding;
