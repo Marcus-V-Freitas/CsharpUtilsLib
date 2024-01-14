@@ -13,31 +13,61 @@ public abstract class BaseSqlHelper
 
     public long? InsertWithId(Query query, List<KeyValuePair<string, object>> parameters)
     {
+        if (parameters.ListIsNullOrEmpty())
+        {
+            return 0;
+        }
+
         return ExecuteScalar<long?>(query.AsInsert(parameters, true));
     }
 
     public async Task<long?> InsertWithIdAsync(Query query, List<KeyValuePair<string, object>> parameters, CancellationToken token = default)
     {
+        if (parameters.ListIsNullOrEmpty())
+        {
+            return 0;
+        }
+
         return await ExecuteScalarAsync<long?>(query.AsInsert(parameters, true), token: token);
     }
 
     public int Insert(Query query, List<KeyValuePair<string, object>> parameters)
     {
+        if (parameters.ListIsNullOrEmpty())
+        {
+            return 0;
+        }
+
         return ExecuteNonQuery(query.AsInsert(parameters));
     }
 
     public async Task<int> InsertAsync(Query query, List<KeyValuePair<string, object>> parameters, CancellationToken token = default)
     {
+        if (parameters.ListIsNullOrEmpty())
+        {
+            return 0;
+        }
+
         return await ExecuteNonQueryAsync(query.AsInsert(parameters), token);
     }
 
     public int Update(Query query, List<KeyValuePair<string, object>> parameters)
     {
+        if (parameters.ListIsNullOrEmpty())
+        {
+            return 0;
+        }
+
         return ExecuteNonQuery(query.AsUpdate(parameters));
     }
 
     public async Task<int> UpdateAsync(Query query, List<KeyValuePair<string, object>> parameters, CancellationToken token = default)
     {
+        if (parameters.ListIsNullOrEmpty())
+        {
+            return 0;
+        }
+
         return await ExecuteNonQueryAsync(query.AsUpdate(parameters), token);
     }
 
