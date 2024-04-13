@@ -53,7 +53,22 @@
   >- ToDistinctList
   
 ---
-  
+
+* **Compression**
+
+> Compress/Decompress text and bytes (Brotli/GZip/Deflate)
+
+  >- Compress
+  >- Decompress
+  >- CompressAsync
+  >- DecompressAsync
+  >- CompressString
+  >- DecompressString
+  >- CompressStringAsync
+  >- DecompressStringAsync
+
+---
+
 * **Crypto**
 
 > Encryption algorithms

@@ -71,4 +71,5 @@ global using SqlKata;
 global using SqlKata.Compilers;
 global using SqlKata.Execution;
 global using ParquetSharp;
+global using System.IO.Compression;
 global using Encoding = System.Text.Encoding;

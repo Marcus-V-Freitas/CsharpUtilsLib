@@ -27,3 +27,6 @@ global using CsharpUtilsLib.External.CorreiosShippings;
 global using CsharpUtilsLib.External.CorreiosShippings.Models;
 global using CsharpUtilsLib.External.PIXParticipants;
 global using CsharpUtilsLib.External.CorreiosShippings.Models.Enums;
+global using CsharpUtilsLib.Compression;
+global using System.IO.Compression;
+global using System.Text;
