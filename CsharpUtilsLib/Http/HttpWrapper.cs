@@ -8,6 +8,7 @@ public sealed class HttpWrapper : IHttpWrapper
     private Dictionary<string, string> _headers = new();
     private List<KeyValuePair<string, string>> _cookies = new();
     private Encoding _encoding = Encoding.Default;
+    private IWebProxy _proxy = null!;
 
     public Encoding Encoding
     {
@@ -19,10 +20,19 @@ public sealed class HttpWrapper : IHttpWrapper
         }
     }
 
+    public IWebProxy Proxy
+    {
+        get => _proxy;
+        set
+        {
+            _proxy = value;
+            FillWebProxy(_proxy);
+        }
+    }
+
     public string ContentType { get; set; } = _defaultContentType;
     public bool KeepAlive { get; set; }
     public int TimeoutSeconds { get; set; } = 30;
-    public WebProxy Proxy { get; private set; }
     public HttpStatusCode StatusCode { get; private set; }
     public string ReasonPhrase { get; private set; } = null!;
     public string RequestUri { get; private set; } = null!;
@@ -50,6 +60,7 @@ public sealed class HttpWrapper : IHttpWrapper
 
     public HttpWrapper(int timeoutSeconds = 30, bool allowAutoRedirect = true, WebProxy proxy = null!)
     {
+        RegisterEncodings();
         TimeoutSeconds = timeoutSeconds;
         Encoding = Encoding.Default;
 
@@ -62,8 +73,7 @@ public sealed class HttpWrapper : IHttpWrapper
             AllowAutoRedirect = allowAutoRedirect
         };
 
-        RegisterEncodings();
-        FillWebProxy(proxy);
+        Proxy = proxy;
     }
 
     public async Task<HtmlString> HtmlGET(string Url, bool lowerCaseKeepAlive = false)
@@ -273,14 +283,15 @@ public sealed class HttpWrapper : IHttpWrapper
         }
     }
 
-    private void FillWebProxy(WebProxy proxy)
+    private void FillWebProxy(IWebProxy proxy)
     {
-        if (proxy != null)
+        if (_httpClientHandler == null)
         {
-            Proxy = proxy;
-            _httpClientHandler.Proxy = Proxy;
-            _httpClientHandler.UseProxy = true;
+            return;
         }
+
+        _httpClientHandler.Proxy = proxy;
+        _httpClientHandler.UseProxy = proxy != null;
     }
 
     private async Task<HttpResponseMessage> ReponseMessage(HttpMethod method,

@@ -5,7 +5,7 @@ public interface IHttpWrapper : IDisposable
     HttpResponseHeaders ResponseHeaders { get; }
     HttpStatusCode StatusCode { get; }
     string ReasonPhrase { get; }
-    WebProxy Proxy { get; }
+    IWebProxy Proxy { get; set; }
     Encoding Encoding { get; set; }
     string ContentType { get; set; }
     bool KeepAlive { get; set; }
