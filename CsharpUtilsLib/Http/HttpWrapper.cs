@@ -3,8 +3,9 @@ namespace CsharpUtilsLib.Http;
 public sealed class HttpWrapper : IHttpWrapper
 {
     private const string _defaultContentType = "application/x-www-form-urlencoded";
-    private readonly HttpClientHandler _httpClientHandler;
+    private readonly bool _allowAutoRedirect;
     private readonly CookieContainer _cookiesContainer = new();
+    private HttpClientHandler _httpClientHandler;
     private Dictionary<string, string> _headers = new();
     private List<KeyValuePair<string, string>> _cookies = new();
     private Encoding _encoding = Encoding.Default;
@@ -63,16 +64,7 @@ public sealed class HttpWrapper : IHttpWrapper
         RegisterEncodings();
         TimeoutSeconds = timeoutSeconds;
         Encoding = Encoding.Default;
-
-        _httpClientHandler = new HttpClientHandler()
-        {
-            AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate | DecompressionMethods.Brotli,
-            SslProtocols = SslProtocols.Ssl3 | SslProtocols.Tls | SslProtocols.Tls11 | SslProtocols.Tls12 | SslProtocols.Tls13,
-            ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true,
-            CookieContainer = _cookiesContainer,
-            AllowAutoRedirect = allowAutoRedirect
-        };
-
+        _allowAutoRedirect = allowAutoRedirect;
         Proxy = proxy;
     }
 
@@ -220,6 +212,20 @@ public sealed class HttpWrapper : IHttpWrapper
         return bytes;
     }
 
+    private void ResetHttpClientHandler()
+    {
+        _httpClientHandler?.Dispose();
+
+        _httpClientHandler = new HttpClientHandler()
+        {
+            AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate | DecompressionMethods.Brotli,
+            SslProtocols = SslProtocols.Ssl3 | SslProtocols.Tls | SslProtocols.Tls11 | SslProtocols.Tls12 | SslProtocols.Tls13,
+            ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true,
+            CookieContainer = _cookiesContainer,
+            AllowAutoRedirect = _allowAutoRedirect
+        };
+    }
+
     private static void RegisterEncodings()
     {
         EncodingProvider provider = CodePagesEncodingProvider.Instance;
@@ -285,10 +291,7 @@ public sealed class HttpWrapper : IHttpWrapper
 
     private void FillWebProxy(IWebProxy proxy)
     {
-        if (_httpClientHandler == null)
-        {
-            return;
-        }
+        ResetHttpClientHandler();
 
         _httpClientHandler.Proxy = proxy;
         _httpClientHandler.UseProxy = proxy != null;
