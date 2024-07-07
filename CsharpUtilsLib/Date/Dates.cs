@@ -150,4 +150,39 @@ public static class Dates
         }
         return count;
     }
+
+    public static int DaysBetweenDates(this DateTime startDate, DateTime endDate)
+    {
+        return (endDate - startDate).Days;
+    }
+
+    public static bool IsLeapYear(this int year)
+    {
+        return DateTime.IsLeapYear(year);
+    }
+
+    public static DateTime GetLastDayOfMonth(this DateTime date)
+    {
+        return new DateTime(date.Year, date.Month, DateTime.DaysInMonth(date.Year, date.Month));
+    }
+
+    public static List<DateTime> GenerateDateRange(this DateTime startDate, DateTime endDate)
+    {
+        List<DateTime> dates = new List<DateTime>();
+        for (DateTime date = startDate; date <= endDate; date = date.AddDays(1))
+        {
+            dates.Add(date);
+        }
+        return dates;
+    }
+
+    public static bool IsDateInRange(this DateTime date, DateTime startDate, DateTime endDate)
+    {
+        return date >= startDate && date <= endDate;
+    }
+
+    public static int GetDaysUntilDate(this DateTime date)
+    {
+        return (date - DateTime.Now.Date).Days;
+    }
 }

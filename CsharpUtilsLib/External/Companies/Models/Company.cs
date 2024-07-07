@@ -42,7 +42,7 @@ public sealed class Company
     public int? CnaeFiscal { get; set; }
 
     [Display(Name = "Código do País"), JsonPropertyName("codigo_pais")]
-    public string CodigoPais { get; set; }
+    public int? CodigoPais { get; set; }
 
     [Display(Name = "Complemento"), JsonPropertyName("complemento")]
     public string Complemento { get; set; }

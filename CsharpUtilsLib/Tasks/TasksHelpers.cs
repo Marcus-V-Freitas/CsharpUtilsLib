@@ -2,6 +2,46 @@
 
 public static class TasksHelpers
 {
+    public static async Task RetryWithBackoff(this Func<Task> action, int maxRetries, int initialDelayMilliseconds)
+    {
+        int retries = 0;
+        int delay = initialDelayMilliseconds;
+
+        while (true)
+        {
+            try
+            {
+                await action();
+                break;
+            }
+            catch
+            {
+                if (++retries == maxRetries)
+                    throw;
+
+                await Task.Delay(delay);
+                delay *= 2;
+            }
+        }
+    }
+
+    public static async Task ExecuteWithTimeout(this Action action, TimeSpan timeout)
+    {
+        using (var cts = new CancellationTokenSource())
+        {
+            var task = Task.Run(action, cts.Token);
+            if (await Task.WhenAny(task, Task.Delay(timeout, cts.Token)) == task)
+            {
+                cts.Cancel();
+                await task;  // Ensure any exceptions are rethrown
+            }
+            else
+            {
+                throw new TimeoutException("The operation has timed out.");
+            }
+        }
+    }
+
     public static Task<Task<T>> WhenAnyWithCompletionSource<T>(IEnumerable<Task<T>> tasks)
     {
         TaskCompletionSource<Task<T>> tcs = new TaskCompletionSource<Task<T>>();
