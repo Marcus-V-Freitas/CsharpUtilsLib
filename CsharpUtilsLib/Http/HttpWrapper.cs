@@ -38,6 +38,8 @@ public sealed class HttpWrapper : IHttpWrapper
     public string ReasonPhrase { get; private set; } = null!;
     public string RequestUri { get; private set; } = null!;
     public string ErrorMessage { get; private set; } = null!;
+
+    public Exception ErrorException { get; private set; } = null!;
     public long? ContentLength { get; private set; } = null!;
     public string Version { get; private set; } = null!;
     public Dictionary<string, string> Headers { get => _headers; set => _headers = value; }
@@ -326,11 +328,13 @@ public sealed class HttpWrapper : IHttpWrapper
             }
             catch (TaskCanceledException ex)
             {
-                ErrorMessage = $"[Timeout] - {ex.StackTrace}";
+                ErrorMessage = $"[Timeout] - {ex.Message} - {ex.StackTrace}";
+                ErrorException = ex;
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"[Internal Error] - {ex.StackTrace}";
+                ErrorMessage = $"[Internal Error] - {ex.Message} - {ex.StackTrace}";
+                ErrorException = ex;
             }
         }
         return null!;
