@@ -276,7 +276,7 @@ public sealed class HttpWrapper : IHttpWrapper
             http.DefaultRequestHeaders.Remove(key);
         }
 
-        http.DefaultRequestHeaders.Add(key, value);
+        http.DefaultRequestHeaders.TryAddWithoutValidation(key, value);
     }
 
     private void AddKeepAlive(HttpClient http, bool lowerCaseKeepAlive)
@@ -380,7 +380,7 @@ public sealed class HttpWrapper : IHttpWrapper
 
         if (sb.Length > 0)
         {
-            request.Headers.Add("Cookie", sb.ToString());
+            request.Headers.TryAddWithoutValidation("Cookie", sb.ToString());
         }
     }
 
