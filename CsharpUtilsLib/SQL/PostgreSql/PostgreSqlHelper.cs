@@ -4,7 +4,11 @@ public class PostgreHelper : BaseSqlHelper
 {
     public PostgreHelper(string connectionString) : base(connectionString)
     {
-        _compiler = new PostgresCompiler();
+    }
+
+    public PostgreHelper(string writeConnectionString, string readConnectionString) : base(writeConnectionString, readConnectionString)
+    {
+
     }
 
     protected override DbCommand ConfigureCommand(Query query, DbConnection connection)
@@ -23,17 +27,17 @@ public class PostgreHelper : BaseSqlHelper
         return command;
     }
 
-    protected override DbConnection ConfigureConnection()
-    {
-        NpgsqlConnection conn = new NpgsqlConnection(ConnectionString);
-        conn.Open();
-        return conn;
-    }
+    protected override DbConnectionStringBuilder CreateConnectionBuilder(string connectionString) => new NpgsqlConnectionStringBuilder(connectionString);
 
-    protected override async Task<DbConnection> ConfigureConnectionAsync(CancellationToken token)
+    protected override Compiler DefineDatabaseCompiler() => new PostgresCompiler();
+
+    protected override DbConnection DetermineConnectionString(Query query)
     {
-        NpgsqlConnection conn = new NpgsqlConnection(ConnectionString);
-        await conn.OpenAsync(token);
-        return conn;
+        if (ReadConnectionIsAvailable(query))
+        {
+            return new NpgsqlConnection(_readConnectionBuilder.ConnectionString);
+        }
+
+        return new NpgsqlConnection(_writeConnectionBuilder.ConnectionString);
     }
 }

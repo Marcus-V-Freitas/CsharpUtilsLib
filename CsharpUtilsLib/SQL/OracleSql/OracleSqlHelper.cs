@@ -1,40 +1,43 @@
-﻿namespace CsharpUtilsLib.SQL.OracleSql
+﻿namespace CsharpUtilsLib.SQL.OracleSql;
+
+public class OracleSqlHelper : BaseSqlHelper
 {
-    public sealed class OracleSqlHelper : BaseSqlHelper
+    public OracleSqlHelper(string connectionString) : base(connectionString)
     {
-        public OracleSqlHelper(string connectionString) : base(connectionString)
+    }
+
+    public OracleSqlHelper(string writeConnectionString, string readConnectionString) : base(writeConnectionString, readConnectionString)
+    {
+
+    }
+
+    protected override DbCommand ConfigureCommand(Query query, DbConnection connection)
+    {
+        SqlResult compiledSql = _compiler.Compile(query);
+        OracleCommand command = new OracleCommand(compiledSql.Sql, (OracleConnection)connection)
         {
-            _compiler = new OracleCompiler();
+            CommandTimeout = Timeout
+        };
+
+        foreach (string paramName in compiledSql.NamedBindings.Keys)
+        {
+            command.Parameters.Add(paramName.TrimStart(':'), compiledSql.NamedBindings[paramName]);
         }
 
-        protected override DbCommand ConfigureCommand(Query query, DbConnection connection)
+        return command;
+    }
+
+    protected override DbConnectionStringBuilder CreateConnectionBuilder(string connectionString) => new OracleConnectionStringBuilder(connectionString);
+
+    protected override Compiler DefineDatabaseCompiler() => new OracleCompiler();
+
+    protected override DbConnection DetermineConnectionString(Query query)
+    {
+        if (ReadConnectionIsAvailable(query))
         {
-            SqlResult compiledSql = _compiler.Compile(query);
-            OracleCommand command = new OracleCommand(compiledSql.Sql, (OracleConnection)connection)
-            {
-                CommandTimeout = Timeout
-            };
-
-            foreach (string paramName in compiledSql.NamedBindings.Keys)
-            {
-                command.Parameters.Add(paramName.TrimStart(':'), compiledSql.NamedBindings[paramName]);
-            }
-
-            return command;
+            return new OracleConnection(_readConnectionBuilder.ConnectionString);
         }
 
-        protected override DbConnection ConfigureConnection()
-        {
-            OracleConnection conn = new OracleConnection(ConnectionString);
-            conn.Open();
-            return conn;
-        }
-
-        protected override async Task<DbConnection> ConfigureConnectionAsync(CancellationToken token)
-        {
-            OracleConnection conn = new OracleConnection(ConnectionString);
-            await conn.OpenAsync(token);
-            return conn;
-        }
+        return new OracleConnection(_writeConnectionBuilder.ConnectionString);
     }
 }

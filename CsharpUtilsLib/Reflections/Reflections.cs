@@ -43,14 +43,14 @@ public static class Reflections
     public static void SetPropertyValue(this object obj, string propertyName, object value)
     {
         Type objType = obj.GetType();
-        PropertyInfo property = objType.GetProperty(propertyName)!;
+        PropertyInfo property = objType.GetProperty(propertyName, GetBindingFlags)!;
         property.SetValue(obj, value);
     }
 
     public static object GetPropertyValue(this object obj, string propertyName)
     {
         Type objType = obj.GetType();
-        PropertyInfo property = objType.GetProperty(propertyName)!;
+        PropertyInfo property = objType.GetProperty(propertyName, GetBindingFlags)!;
         return property.GetValue(obj)!;
     }
 
@@ -63,14 +63,14 @@ public static class Reflections
     public static void SetFieldValue(this object obj, string fieldName, object value)
     {
         Type objType = obj.GetType();
-        FieldInfo field = objType.GetField(fieldName)!;
+        FieldInfo field = objType.GetField(fieldName, GetBindingFlags)!;
         field.SetValue(obj, value);
     }
 
     public static object GetFieldValue(this object obj, string fieldName)
     {
         Type objType = obj.GetType();
-        FieldInfo field = objType.GetField(fieldName)!;
+        FieldInfo field = objType.GetField(fieldName, GetBindingFlags)!;
         return field.GetValue(obj)!;
     }
 
@@ -87,6 +87,8 @@ public static class Reflections
 
     public static bool HasPropertyOrField(this object obj, string name)
     {
-        return obj.GetType().GetProperty(name) != null || obj.GetType().GetField(name) != null;
+        return obj.GetType().GetProperty(name, GetBindingFlags) != null || obj.GetType().GetField(name) != null;
     }
+
+    private static BindingFlags GetBindingFlags => BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.IgnoreCase;
 }

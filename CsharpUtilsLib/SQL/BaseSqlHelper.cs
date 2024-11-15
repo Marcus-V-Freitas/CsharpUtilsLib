@@ -1,14 +1,27 @@
 ﻿namespace CsharpUtilsLib.SQL;
 
-public abstract class BaseSqlHelper
+public abstract class BaseSqlHelper : ISqlHelper
 {
     protected Compiler _compiler;
-    public readonly string ConnectionString;
-    public int Timeout = 300;
+    protected readonly List<string> _readMethods = new() { "select", "aggregate" };
+    protected readonly DbConnectionStringBuilder _readConnectionBuilder;
+    protected readonly DbConnectionStringBuilder _writeConnectionBuilder;
+    public int Timeout => 300;
+    public string ReadConnectionString => _readConnectionBuilder?.ConnectionString!;
+    public string WriteConnectionString => _writeConnectionBuilder?.ConnectionString!;
 
-    public BaseSqlHelper(string connectionString)
+    protected BaseSqlHelper(string connectionString)
     {
-        ConnectionString = connectionString;
+        _compiler = DefineDatabaseCompiler();
+        _writeConnectionBuilder = CreateConnectionBuilder(connectionString);
+        _readConnectionBuilder = CreateConnectionBuilder(connectionString);
+    }
+
+    protected BaseSqlHelper(string writeConnectionString, string readConnectionString)
+    {
+        _compiler = DefineDatabaseCompiler();
+        _writeConnectionBuilder = CreateConnectionBuilder(writeConnectionString);
+        _readConnectionBuilder = CreateConnectionBuilder(readConnectionString);
     }
 
     public long? InsertWithId(Query query, List<KeyValuePair<string, object>> parameters)
@@ -103,7 +116,7 @@ public abstract class BaseSqlHelper
 
     public T SelectOne<T>(Query query)
     {
-        using DbConnection conn = ConfigureConnection();
+        using DbConnection conn = ConfigureConnection(query);
         using QueryFactory factory = new QueryFactory(conn, _compiler);
 
         if (!CheckIfTypeIsComplex(query))
@@ -118,7 +131,7 @@ public abstract class BaseSqlHelper
 
     public async Task<T> SelectOneAsync<T>(Query query, CancellationToken token = default)
     {
-        using DbConnection conn = await ConfigureConnectionAsync(token);
+        using DbConnection conn = await ConfigureConnectionAsync(query, token);
         using QueryFactory factory = new QueryFactory(conn, _compiler);
 
         if (!CheckIfTypeIsComplex(query))
@@ -133,7 +146,7 @@ public abstract class BaseSqlHelper
 
     public IEnumerable<T> Select<T>(Query query)
     {
-        using DbConnection conn = ConfigureConnection();
+        using DbConnection conn = ConfigureConnection(query);
         using QueryFactory factory = new QueryFactory(conn, _compiler);
 
         if (!CheckIfTypeIsComplex(query))
@@ -148,7 +161,7 @@ public abstract class BaseSqlHelper
 
     public async Task<IEnumerable<T>> SelectAsync<T>(Query query, CancellationToken token = default)
     {
-        using DbConnection conn = await ConfigureConnectionAsync(token);
+        using DbConnection conn = await ConfigureConnectionAsync(query, token);
         using QueryFactory factory = new QueryFactory(conn, _compiler);
 
         if (!CheckIfTypeIsComplex(query))
@@ -163,7 +176,7 @@ public abstract class BaseSqlHelper
 
     public async Task<int> ExecuteNonQueryAsync(Query query, CancellationToken token = default)
     {
-        using DbConnection conn = await ConfigureConnectionAsync(token);
+        using DbConnection conn = await ConfigureConnectionAsync(query, token);
         using DbCommand command = ConfigureCommand(query, conn);
 
         return await command.ExecuteNonQueryAsync(token);
@@ -171,7 +184,7 @@ public abstract class BaseSqlHelper
 
     public int ExecuteNonQuery(Query query)
     {
-        using DbConnection conn = ConfigureConnection();
+        using DbConnection conn = ConfigureConnection(query);
         using DbCommand command = ConfigureCommand(query, conn);
 
         return command.ExecuteNonQuery();
@@ -179,7 +192,7 @@ public abstract class BaseSqlHelper
 
     public async Task<T> ExecuteScalarAsync<T>(Query query, T defaultValue = default!, CancellationToken token = default)
     {
-        using DbConnection conn = await ConfigureConnectionAsync(token);
+        using DbConnection conn = await ConfigureConnectionAsync(query, token);
         using DbCommand command = ConfigureCommand(query, conn);
 
         object result = (await command.ExecuteScalarAsync(token))!;
@@ -189,7 +202,7 @@ public abstract class BaseSqlHelper
 
     public T ExecuteScalar<T>(Query query, T defaultValue = default!)
     {
-        using DbConnection conn = ConfigureConnection();
+        using DbConnection conn = ConfigureConnection(query);
         using DbCommand command = ConfigureCommand(query, conn);
 
         object result = command.ExecuteScalar()!;
@@ -199,7 +212,7 @@ public abstract class BaseSqlHelper
 
     public async IAsyncEnumerable<DbDataReader> ExecuteReaderAsync(Query query, [EnumeratorCancellation] CancellationToken token = default)
     {
-        using DbConnection conn = await ConfigureConnectionAsync(token);
+        using DbConnection conn = await ConfigureConnectionAsync(query, token);
         using DbCommand command = ConfigureCommand(query, conn);
         using DbDataReader cursor = await command.ExecuteReaderAsync(token);
 
@@ -211,7 +224,7 @@ public abstract class BaseSqlHelper
 
     public IEnumerable<DbDataReader> ExecuteReader(Query query)
     {
-        using DbConnection conn = ConfigureConnection();
+        using DbConnection conn = ConfigureConnection(query);
         using DbCommand command = ConfigureCommand(query, conn);
         using DbDataReader cursor = command.ExecuteReader();
 
@@ -221,11 +234,29 @@ public abstract class BaseSqlHelper
         }
     }
 
-    protected abstract DbConnection ConfigureConnection();
+    protected abstract Compiler DefineDatabaseCompiler();
 
-    protected abstract Task<DbConnection> ConfigureConnectionAsync(CancellationToken token);
+    protected abstract DbConnection DetermineConnectionString(Query query);
+
+    protected abstract DbConnectionStringBuilder CreateConnectionBuilder(string connectionString);
 
     protected abstract DbCommand ConfigureCommand(Query query, DbConnection connection);
+
+    protected virtual DbConnection ConfigureConnection(Query query)
+    {
+        DbConnection conn = DetermineConnectionString(query);
+        conn.Open();
+        return conn;
+    }
+
+    protected virtual async Task<DbConnection> ConfigureConnectionAsync(Query query, CancellationToken token)
+    {
+        DbConnection conn = DetermineConnectionString(query);
+        await conn.OpenAsync(token);
+        return conn;
+    }
+
+    protected virtual bool ReadConnectionIsAvailable(Query query) => Transaction.Current == null && _readMethods.Contains(query.Method);
 
     protected virtual Query ConvertQueryToXQuery(QueryFactory factory, Query query)
     {

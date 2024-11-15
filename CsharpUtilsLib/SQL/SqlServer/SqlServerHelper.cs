@@ -4,7 +4,11 @@ public class SqlServerHelper : BaseSqlHelper
 {
     public SqlServerHelper(string connectionString) : base(connectionString)
     {
-        _compiler = new SqlServerCompiler();
+    }
+
+    public SqlServerHelper(string writeConnectionString, string readConnectionString) : base(writeConnectionString, readConnectionString)
+    {
+
     }
 
     protected override DbCommand ConfigureCommand(Query query, DbConnection connection)
@@ -23,17 +27,17 @@ public class SqlServerHelper : BaseSqlHelper
         return command;
     }
 
-    protected override DbConnection ConfigureConnection()
-    {
-        SqlConnection conn = new SqlConnection(ConnectionString);
-        conn.Open();
-        return conn;
-    }
+    protected override DbConnectionStringBuilder CreateConnectionBuilder(string connectionString) => new SqlConnectionStringBuilder(connectionString);
 
-    protected override async Task<DbConnection> ConfigureConnectionAsync(CancellationToken token)
+    protected override Compiler DefineDatabaseCompiler() => new SqlServerCompiler();
+
+    protected override DbConnection DetermineConnectionString(Query query)
     {
-        DbConnection conn = new SqlConnection(ConnectionString);
-        await conn.OpenAsync(token);
-        return conn;
+        if (ReadConnectionIsAvailable(query))
+        {
+            return new SqlConnection(_readConnectionBuilder.ConnectionString);
+        }
+
+        return new SqlConnection(_writeConnectionBuilder.ConnectionString);
     }
 }

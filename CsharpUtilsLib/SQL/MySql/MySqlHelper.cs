@@ -4,7 +4,11 @@ public class MySqlHelper : BaseSqlHelper
 {
     public MySqlHelper(string connectionString) : base(connectionString)
     {
-        _compiler = new MySqlCompiler();
+    }
+
+    public MySqlHelper(string writeConnectionString, string readConnectionString) : base(writeConnectionString, readConnectionString)
+    {
+
     }
 
     protected override DbCommand ConfigureCommand(Query query, DbConnection connection)
@@ -23,17 +27,17 @@ public class MySqlHelper : BaseSqlHelper
         return command;
     }
 
-    protected override DbConnection ConfigureConnection()
-    {
-        MySqlConnection conn = new MySqlConnection(ConnectionString);
-        conn.Open();
-        return conn;
-    }
+    protected override DbConnectionStringBuilder CreateConnectionBuilder(string connectionString) => new MySqlConnectionStringBuilder(connectionString);
 
-    protected override async Task<DbConnection> ConfigureConnectionAsync(CancellationToken token)
+    protected override Compiler DefineDatabaseCompiler() => new MySqlCompiler();
+
+    protected override DbConnection DetermineConnectionString(Query query)
     {
-        MySqlConnection conn = new MySqlConnection(ConnectionString);
-        await conn.OpenAsync(token);
-        return conn;
+        if (ReadConnectionIsAvailable(query))
+        {
+            return new MySqlConnection(_readConnectionBuilder.ConnectionString);
+        }
+
+        return new MySqlConnection(_writeConnectionBuilder.ConnectionString);
     }
 }

@@ -4,7 +4,11 @@ public class SqlLiteHelper : BaseSqlHelper
 {
     public SqlLiteHelper(string connectionString) : base(connectionString)
     {
-        _compiler = new SqliteCompiler();
+    }
+
+    public SqlLiteHelper(string writeConnectionString, string readConnectionString) : base(writeConnectionString, readConnectionString)
+    {
+
     }
 
     protected override DbCommand ConfigureCommand(Query query, DbConnection connection)
@@ -23,17 +27,17 @@ public class SqlLiteHelper : BaseSqlHelper
         return command;
     }
 
-    protected override DbConnection ConfigureConnection()
-    {
-        SQLiteConnection conn = new SQLiteConnection(ConnectionString);
-        conn.Open();
-        return conn;
-    }
+    protected override DbConnectionStringBuilder CreateConnectionBuilder(string connectionString) => new SQLiteConnectionStringBuilder(connectionString);
 
-    protected override async Task<DbConnection> ConfigureConnectionAsync(CancellationToken token)
+    protected override Compiler DefineDatabaseCompiler() => new SqliteCompiler();
+
+    protected override DbConnection DetermineConnectionString(Query query)
     {
-        SQLiteConnection conn = new SQLiteConnection(ConnectionString);
-        await conn.OpenAsync(token);
-        return conn;
+        if (ReadConnectionIsAvailable(query))
+        {
+            return new SQLiteConnection(_readConnectionBuilder.ConnectionString);
+        }
+
+        return new SQLiteConnection(_writeConnectionBuilder.ConnectionString);
     }
 }
