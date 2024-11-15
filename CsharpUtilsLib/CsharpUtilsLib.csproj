@@ -5,7 +5,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<id>CsharpUtilsLib</id>
-		<version>1.0.33</version>
+		<version>1.0.34</version>
 		<authors>Marcus-V-Freitas</authors>
 		<owners>Marcus-V-Freitas</owners>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -13,7 +13,7 @@
 		<RepositoryUrl>https://github.com/Marcus-V-Freitas/CsharpUtilsLib</RepositoryUrl>
 		<description>Lib containing numerous functions to simplify the day to day development</description>
 		<copyright>Copyright 2024</copyright>
-		<FileVersion>1.0.33</FileVersion>
+		<FileVersion>1.0.34</FileVersion>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
 

@@ -6,7 +6,7 @@ public abstract class BaseSqlHelper : ISqlHelper
     protected readonly List<string> _readMethods = new() { "select", "aggregate" };
     protected readonly DbConnectionStringBuilder _readConnectionBuilder;
     protected readonly DbConnectionStringBuilder _writeConnectionBuilder;
-    public int Timeout => 300;
+    public int Timeout { get; set; } = 300;
     public string ReadConnectionString => _readConnectionBuilder?.ConnectionString!;
     public string WriteConnectionString => _writeConnectionBuilder?.ConnectionString!;
 
