@@ -12,9 +12,12 @@
 		<PackageProjectUrl>https://www.nuget.org/packages/CsharpUtilsLib</PackageProjectUrl>
 		<projectUrl>https://github.com/Marcus-V-Freitas/CsharpUtilsLib</projectUrl>
 		<RepositoryUrl>https://github.com/Marcus-V-Freitas/CsharpUtilsLib</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
 		<description>Lib containing numerous functions to simplify the day to day development</description>
 		<copyright>Copyright 2025</copyright>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<IsPackable>true</IsPackable>
+		<PackageIcon>icon.png</PackageIcon>
 	</PropertyGroup>
 
 	<ItemGroup>
