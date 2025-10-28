@@ -60,7 +60,7 @@ public static class Collections
         return numbers;
     }
 
-    public static T MostFrequent<T>(this IEnumerable<T> list)
+    public static T MostFrequent<T>(this IEnumerable<T> list) where T : notnull
     {
         if (list.ListIsNullOrEmpty())
         {

@@ -3,6 +3,7 @@
 namespace CsharpUtilsLib.Collection.Types
 {
     public sealed class CacheCollection<TKey, TValue> : IDisposable
+        where TKey : notnull
     {
         private readonly Dictionary<TKey, CacheItem<TValue>> _cache = new();
         private readonly TimeSpan _cacheDuration;

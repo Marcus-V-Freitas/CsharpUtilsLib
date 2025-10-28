@@ -14,7 +14,7 @@ public class SqlServerHelper : BaseSqlHelper
     protected override DbCommand ConfigureCommand(Query query, DbConnection connection)
     {
         SqlResult compiledSql = _compiler.Compile(query);
-        SqlCommand command = new SqlCommand(compiledSql.Sql, (SqlConnection)connection)
+        SqlCommand command = new(compiledSql.Sql, (SqlConnection)connection)
         {
             CommandTimeout = Timeout
         };

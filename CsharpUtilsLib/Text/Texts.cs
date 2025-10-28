@@ -245,11 +245,8 @@ public static class Texts
     {
         char[] chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".ToCharArray();
         byte[] data = new byte[size];
-        using (var crypto = new RNGCryptoServiceProvider())
-        {
-            crypto.GetBytes(data);
-        }
-        StringBuilder result = new StringBuilder(size);
+        RandomNumberGenerator.Fill(data);
+        StringBuilder result = new(size);
         foreach (byte b in data)
         {
             result.Append(chars[b % chars.Length]);

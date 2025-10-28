@@ -117,7 +117,7 @@ public abstract class BaseSqlHelper : ISqlHelper
     public T SelectOne<T>(Query query)
     {
         using DbConnection conn = ConfigureConnection(query);
-        using QueryFactory factory = new QueryFactory(conn, _compiler);
+        using QueryFactory factory = new(conn, _compiler);
 
         if (!CheckIfTypeIsComplex(query))
         {
@@ -131,8 +131,8 @@ public abstract class BaseSqlHelper : ISqlHelper
 
     public async Task<T> SelectOneAsync<T>(Query query, CancellationToken token = default)
     {
-        using DbConnection conn = await ConfigureConnectionAsync(query, token);
-        using QueryFactory factory = new QueryFactory(conn, _compiler);
+        await using DbConnection conn = await ConfigureConnectionAsync(query, token);
+        using QueryFactory factory = new(conn, _compiler);
 
         if (!CheckIfTypeIsComplex(query))
         {
@@ -147,7 +147,7 @@ public abstract class BaseSqlHelper : ISqlHelper
     public IEnumerable<T> Select<T>(Query query)
     {
         using DbConnection conn = ConfigureConnection(query);
-        using QueryFactory factory = new QueryFactory(conn, _compiler);
+        using QueryFactory factory = new(conn, _compiler);
 
         if (!CheckIfTypeIsComplex(query))
         {
@@ -161,8 +161,8 @@ public abstract class BaseSqlHelper : ISqlHelper
 
     public async Task<IEnumerable<T>> SelectAsync<T>(Query query, CancellationToken token = default)
     {
-        using DbConnection conn = await ConfigureConnectionAsync(query, token);
-        using QueryFactory factory = new QueryFactory(conn, _compiler);
+        await using DbConnection conn = await ConfigureConnectionAsync(query, token);
+        using QueryFactory factory = new(conn, _compiler);
 
         if (!CheckIfTypeIsComplex(query))
         {
@@ -176,8 +176,8 @@ public abstract class BaseSqlHelper : ISqlHelper
 
     public async Task<int> ExecuteNonQueryAsync(Query query, CancellationToken token = default)
     {
-        using DbConnection conn = await ConfigureConnectionAsync(query, token);
-        using DbCommand command = ConfigureCommand(query, conn);
+        await using DbConnection conn = await ConfigureConnectionAsync(query, token);
+        await using DbCommand command = ConfigureCommand(query, conn);
 
         return await command.ExecuteNonQueryAsync(token);
     }
@@ -192,8 +192,8 @@ public abstract class BaseSqlHelper : ISqlHelper
 
     public async Task<T> ExecuteScalarAsync<T>(Query query, T defaultValue = default!, CancellationToken token = default)
     {
-        using DbConnection conn = await ConfigureConnectionAsync(query, token);
-        using DbCommand command = ConfigureCommand(query, conn);
+        await using DbConnection conn = await ConfigureConnectionAsync(query, token);
+        await using DbCommand command = ConfigureCommand(query, conn);
 
         object result = (await command.ExecuteScalarAsync(token))!;
 
@@ -212,9 +212,9 @@ public abstract class BaseSqlHelper : ISqlHelper
 
     public async IAsyncEnumerable<DbDataReader> ExecuteReaderAsync(Query query, [EnumeratorCancellation] CancellationToken token = default)
     {
-        using DbConnection conn = await ConfigureConnectionAsync(query, token);
-        using DbCommand command = ConfigureCommand(query, conn);
-        using DbDataReader cursor = await command.ExecuteReaderAsync(token);
+        await using DbConnection conn = await ConfigureConnectionAsync(query, token);
+        await using DbCommand command = ConfigureCommand(query, conn);
+        await using DbDataReader cursor = await command.ExecuteReaderAsync(token);
 
         while (await cursor.ReadAsync(token))
         {
@@ -277,7 +277,7 @@ public abstract class BaseSqlHelper : ISqlHelper
 
     protected virtual T ConvertDynamicToEntity<T>(object entity)
     {
-        return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(Newtonsoft.Json.JsonConvert.SerializeObject(entity))!;
+        return entity.Clone<T>();
     }
 
     protected virtual bool CheckIfTypeIsComplex(Query query)

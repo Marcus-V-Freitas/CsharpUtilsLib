@@ -4,7 +4,7 @@ namespace CsharpUtilsLib.FileDirectory.Document;
 /// Little data structure to hold information about file types.
 /// Holds information about binary header at the start of the file
 /// </summary>
-public sealed class FileType
+public sealed record class FileType
 {
     /// <summary>
     /// File Signature (bytes)
@@ -56,25 +56,6 @@ public sealed class FileType
         HeaderOffset = offset;
         Extension = extension;
         Mime = mime;
-    }
-
-    public override bool Equals(object other)
-    {
-        if (!(other is FileType))
-        {
-            return false;
-        }
-
-        FileType otherType = (FileType)other;
-
-        if (Extension == otherType.Extension && Mime == otherType.Mime) return true;
-
-        return base.Equals(other);
-    }
-
-    public override int GetHashCode()
-    {
-        return base.GetHashCode();
     }
 
     public override string ToString()

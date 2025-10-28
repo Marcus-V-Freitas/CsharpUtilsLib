@@ -20,6 +20,7 @@ global using CsharpUtilsLib.External.Tickers;
 global using CsharpUtilsLib.External.Inflations;
 global using CsharpUtilsLib.External.Currencies;
 global using CsharpUtilsLib.External.IBGEDataNews.Models;
+global using CsharpUtilsLib.Crypto;
 global using CsharpUtilsLib.External.DDDs;
 global using CsharpUtilsLib.External.IBGEDataNews;
 global using CsharpUtilsLib.External.CorreiosTrackings;

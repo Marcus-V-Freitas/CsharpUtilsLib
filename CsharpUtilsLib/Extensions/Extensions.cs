@@ -2,6 +2,19 @@ namespace CsharpUtilsLib.Extensions;
 
 public static class Extensions
 {
+    private static readonly JsonSerializerOptions _cloneOptions = new()
+    {
+        ReferenceHandler = ReferenceHandler.Preserve,
+        IncludeFields = true,
+        NumberHandling = JsonNumberHandling.AllowReadingFromString |
+                        JsonNumberHandling.WriteAsString,
+        MaxDepth = 64,
+        ReadCommentHandling = JsonCommentHandling.Skip,
+        AllowTrailingCommas = true,
+        PropertyNameCaseInsensitive = true,
+        Converters = { new JsonStringEnumConverter() }
+    };
+
     public static T GetRandom<T>(this T[] source)
     {
         return source[SafeRandom.Next(source.Length)];
@@ -18,10 +31,10 @@ public static class Extensions
         await action(value);
     }
 
-    public static T Clone<T>(this T item)
+    public static T Clone<T>(this object item)
     {
-        string json = JsonSerializer.Serialize(item);
-        return JsonSerializer.Deserialize<T>(json)!;
+        string json = JsonSerializer.Serialize(item, _cloneOptions);
+        return JsonSerializer.Deserialize<T>(json, _cloneOptions)!;
     }
 
     public static Result ConvertTo<Result, Source>(this Source source, Result defaultValue = default!)

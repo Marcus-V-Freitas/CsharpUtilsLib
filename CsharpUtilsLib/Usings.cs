@@ -15,6 +15,7 @@ global using System.Text.RegularExpressions;
 global using System.Text.Json.Serialization;
 global using System.Security.Cryptography;
 global using System.Runtime.CompilerServices;
+global using Microsoft.Data.SqlClient;
 global using System.Security.Authentication;
 global using CsharpUtilsLib.Date;
 global using CsharpUtilsLib.EnumType;

@@ -5,12 +5,11 @@ public static class AesCrypto
     public static string Encrypt(string text, string secret)
     {
         // generate salt
-        var rng = new RNGCryptoServiceProvider();
         byte[] key;
         byte[] iv;
         byte[] salt = new byte[8];
 
-        rng.GetNonZeroBytes(salt);
+        RandomNumberGenerator.Fill(salt);
         DeriveKeyAndIV(secret, salt, out key, out iv);
         // encrypt bytes
         byte[] encryptedBytes = EncryptStringToBytesAes(text, key, iv);
@@ -35,9 +34,7 @@ public static class AesCrypto
         Buffer.BlockCopy(encryptedBytesWithSalt, salt.Length + 8, encryptedBytes, 0, encryptedBytes.Length);
 
         // get key and iv
-        byte[] key;
-        byte[] iv;
-        DeriveKeyAndIV(secret, salt, out key, out iv);
+        DeriveKeyAndIV(secret, salt, out byte[] key, out byte[] iv);
         return DecryptStringFromBytesAes(encryptedBytes, key, iv);
     }
 
@@ -47,7 +44,7 @@ public static class AesCrypto
         List<byte> concatenatedHashes = new List<byte>(48);
 
         byte[] password = Encoding.UTF8.GetBytes(secret);
-        byte[] currentHash = new byte[0];
+        byte[] currentHash = Array.Empty<byte>();
         MD5 md5 = MD5.Create();
         bool enoughBytesForKey = false;
 
@@ -77,30 +74,25 @@ public static class AesCrypto
 
     private static byte[] EncryptStringToBytesAes(string text, byte[] key, byte[] iv)
     {
-        // Declare the stream used to encrypt to an in memory
-        // array of bytes.
         MemoryStream msEncrypt;
-
-        // Declare the RijndaelManaged object
-        // used to encrypt the data.
-        RijndaelManaged aesAlg = null!;
+        Aes aesAlg = null!;
 
         try
         {
-            // Create a RijndaelManaged object
-            // with the specified key and IV.
-            aesAlg = new RijndaelManaged { Mode = CipherMode.CBC, KeySize = 256, BlockSize = 128, Key = key, IV = iv };
+            aesAlg = Aes.Create();
+            aesAlg.Mode = CipherMode.CBC;
+            aesAlg.KeySize = 256;
+            aesAlg.BlockSize = 128;
+            aesAlg.Key = key;
+            aesAlg.IV = iv;
 
-            // Create an encryptor to perform the stream transform.
             ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
 
-            // Create the streams used for encryption.
             msEncrypt = new MemoryStream();
             using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
             {
                 using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
                 {
-                    //Write all data to the stream.
                     swEncrypt.Write(text);
                     swEncrypt.Flush();
                     swEncrypt.Close();
@@ -109,42 +101,34 @@ public static class AesCrypto
         }
         finally
         {
-            // Clear the RijndaelManaged object.
             if (aesAlg != null)
-                aesAlg.Clear();
+                aesAlg.Dispose();
         }
 
-        // Return the encrypted bytes from the memory stream.
         return msEncrypt.ToArray();
     }
 
     private static string DecryptStringFromBytesAes(byte[] encryptedText, byte[] key, byte[] iv)
     {
-        // Declare the RijndaelManaged object
-        // used to decrypt the data.
-        RijndaelManaged aesAlg = null;
-
-        // Declare the string used to hold
-        // the decrypted text.
+        Aes aesAlg = null!;
         string text;
 
         try
         {
-            // Create a RijndaelManaged object
-            // with the specified key and IV.
-            aesAlg = new RijndaelManaged { Mode = CipherMode.CBC, KeySize = 256, BlockSize = 128, Key = key, IV = iv };
+            aesAlg = Aes.Create();
+            aesAlg.Mode = CipherMode.CBC;
+            aesAlg.KeySize = 256;
+            aesAlg.BlockSize = 128;
+            aesAlg.Key = key;
+            aesAlg.IV = iv;
 
-            // Create a decrytor to perform the stream transform.
             ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
-            // Create the streams used for decryption.
             using (MemoryStream msDecrypt = new MemoryStream(encryptedText))
             {
                 using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
                 {
                     using (StreamReader srDecrypt = new StreamReader(csDecrypt))
                     {
-                        // Read the decrypted bytes from the decrypting stream
-                        // and place them in a string.
                         text = srDecrypt.ReadToEnd();
                         srDecrypt.Close();
                     }
@@ -153,9 +137,8 @@ public static class AesCrypto
         }
         finally
         {
-            // Clear the RijndaelManaged object.
             if (aesAlg != null)
-                aesAlg.Clear();
+                aesAlg.Dispose();
         }
         return text;
     }
