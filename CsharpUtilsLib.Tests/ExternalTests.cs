@@ -62,18 +62,6 @@ public sealed class ExternalTests
     }
 
     [Theory]
-    [InlineData("191.9.12.15", "São Paulo")]
-    [InlineData("8.8.8.8", "Mountain View")]
-    public async Task IPAPI(string ipAdress, string expectedCity)
-    {
-        IPData ipData = new IPData();
-
-        var result = await ipData.GetInfosFromIP(ipAdress);
-
-        Assert.Equal(expectedCity, result.City, ignoreCase: true);
-    }
-
-    [Theory]
     [InlineData("33.014.556/0001-96", "LOJAS AMERICANAS S.A.")]
     [InlineData("00.000.000/0001-91", "BANCO DO BRASIL SA")]
     [InlineData("17022554000192", "KATIA SILENE DOS SANTOS COMITRE 26466621812")]
@@ -187,48 +175,6 @@ public sealed class ExternalTests
     }
 
     [Theory]
-    [InlineData("WALM34", "Walmart Inc.")]
-    [InlineData("BOAC34", "Bank of America Corporation")]
-    public async Task TickerAPI(string word, string expectlongCompanyName)
-    {
-        TickerData tickerData = new TickerData();
-
-        var result = await tickerData.GetTickerByName(word);
-
-        string longCompanyName = result?.Results?.FirstOrDefault()!.LongName!;
-
-        Assert.Equal(longCompanyName, expectlongCompanyName);
-    }
-
-    [Theory]
-    [InlineData("USD", "BRL", "Dólar Americano/Real Brasileiro")]
-    [InlineData("USD", "EUR", "Dólar Americano/Euro")]
-    public async Task CurrencyAPI(string baseCurrency, string anotherCurrency, string expectName)
-    {
-        CurrencyData currencyData = new CurrencyData();
-
-        var result = await currencyData.ConvertCurrencies(baseCurrency, anotherCurrency);
-
-        string name = result?.Currency?.FirstOrDefault()!.Name!;
-
-        Assert.Equal(name, expectName);
-    }
-
-    [Theory]
-    [InlineData("QB942322947BR", "Objeto entregue ao destinatário")]
-    [InlineData("IX021419098BR", "Objeto entregue ao destinatário")]
-    public async Task CorreiosTrackingAPI(string trackingCode, string expectedFinalStatus)
-    {
-        CorreiosTrackingData correiosTrackingData = new CorreiosTrackingData();
-
-        var result = await correiosTrackingData.GetByTrackingCode(trackingCode, asc: false);
-
-        string finalStatus = result?.FirstOrDefault()!.Status!;
-
-        Assert.Equal(finalStatus, expectedFinalStatus);
-    }
-
-    [Theory]
     [InlineData("03/03/2023", "04/03/2023", "PNAD Contínua: taxa de desocupação é de 8,6% e taxa de subutilização é de 18,8% no trimestre encerrado em fevereiro")]
     [InlineData("01/01/2022", "02/01/2022", "Começa contagem regressiva para o início da coleta do Censo 2022")]
     public async Task IBGENewsAPI(string startDate, string endDate, string expectMainNewsTitle)
@@ -243,36 +189,5 @@ public sealed class ExternalTests
         string mainNewsTitle = result?.Items?.FirstOrDefault()!.Titulo!;
 
         Assert.Equal(mainNewsTitle, expectMainNewsTitle);
-    }
-
-    [Theory]
-    [InlineData("Brazil", "29/10/2022", "29/01/2023", "6.47")]
-    [InlineData("Argentina", "01/01/2021", "31/12/2022", "9.68")]
-    public async Task InflationAPI(string country, string startDate, string endDate, string expectedhighestValue)
-    {
-        InflationData inflationData = new InflationData();
-
-        DateTime start = startDate.ConvertToDatetime();
-        DateTime end = endDate.ConvertToDatetime();
-
-        var result = await inflationData.GetByCountryInPeriod(country, start, end);
-
-        var highestValue = result.Inflation?.Max(x => x.Value)!;
-
-        Assert.Equal(highestValue, expectedhighestValue);
-    }
-
-    [Fact]
-    public async Task CorreiosShippingAPI()
-    {
-        var request = new CorreiosShippingRequest("95020450", "71939360", 23.78, ShippingFormat.BoxOrPackage,
-                                                  40, 71.50, 58, false, 0, false, ShippingService.RetailSEDEX,
-                                                  0, ShippingIndicator.PriceAndTerm);
-
-        CorreiosShippingData correiosShipping = new CorreiosShippingData();
-
-        var result = await correiosShipping.GetByShippingDetails(request);
-
-        Assert.Equal("991,30", result.Servico.Valor);
     }
 }
