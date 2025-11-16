@@ -1,8 +1,5 @@
 namespace CsharpUtilsLib.Exceptions;
 
-public sealed class ValidationDataException : Exception
+public sealed class ValidationDataException(string? message) : Exception(message)
 {
-    public ValidationDataException(string? message) : base(message)
-    {
-    }
 }

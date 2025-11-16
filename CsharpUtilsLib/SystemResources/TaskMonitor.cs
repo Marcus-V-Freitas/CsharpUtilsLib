@@ -33,7 +33,7 @@ public sealed class TaskMonitor
         var startCpuUsage = process.TotalProcessorTime;
         long startMemory = process.PrivateMemorySize64;
 
-        Stopwatch stopwatch = new Stopwatch();
+        Stopwatch stopwatch = new();
         stopwatch.Start();
 
         T result = task();
@@ -53,7 +53,7 @@ public sealed class TaskMonitor
         var startCpuUsage = process.TotalProcessorTime;
         long startMemory = process.PrivateMemorySize64;
 
-        Stopwatch stopwatch = new Stopwatch();
+        Stopwatch stopwatch = new();
         stopwatch.Start();
 
         T result = await asyncTask();

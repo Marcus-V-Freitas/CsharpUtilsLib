@@ -2,7 +2,7 @@ namespace CsharpUtilsLib.External.Translate;
 
 public sealed class GoogleTranslate
 {
-    private readonly HttpClient _client = new HttpClient();
+    private readonly HttpClient _client = new();
     private const string _url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl={0}&tl={1}&dt=t&q={2}";
 
     public async Task<string> Translate(string input, string inputLanguage, string outputLanguage)
@@ -23,7 +23,7 @@ public sealed class GoogleTranslate
         var externalDetails = JsonSerializer.Deserialize<List<object>>(output);
         var internalDetails = JsonSerializer.Deserialize<List<object>>($"{externalDetails!.FirstOrDefault()}");
 
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new();
 
         foreach (var internalDetail in internalDetails!)
         {

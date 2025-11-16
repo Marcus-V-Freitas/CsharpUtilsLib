@@ -3,7 +3,7 @@
 public abstract class BaseSqlHelper : ISqlHelper
 {
     protected Compiler _compiler;
-    protected readonly List<string> _readMethods = new() { "select", "aggregate" };
+    protected readonly List<string> _readMethods = ["select", "aggregate"];
     protected readonly DbConnectionStringBuilder _readConnectionBuilder;
     protected readonly DbConnectionStringBuilder _writeConnectionBuilder;
     public int Timeout { get; set; } = 300;

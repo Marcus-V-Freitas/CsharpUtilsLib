@@ -109,7 +109,7 @@ public sealed class HtmlString
             return string.Empty;
         }
 
-        string value = node.GetAttributeValue(attributeName, null);
+        string value = node.GetAttributeValue(attributeName, null!);
         value = normalize ? Web.ClearHtml(value) : value;
 
         if (!string.IsNullOrEmpty(value))
@@ -132,7 +132,7 @@ public sealed class HtmlString
 
         foreach (var node in nodes)
         {
-            string value = node.GetAttributeValue(attributeName, null);
+            string value = node.GetAttributeValue(attributeName, null!);
             value = normalize ? Web.ClearHtml(value) : value;
 
             if (!string.IsNullOrEmpty(value))

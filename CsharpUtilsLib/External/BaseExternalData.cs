@@ -4,10 +4,12 @@ public abstract class BaseExternalData<T> : IDisposable where T : class
 {
     protected readonly HttpWrapper _http;
     protected abstract string Url { get; }
-    protected virtual List<KeyValuePair<string, string>> Cookies => new();
-    protected virtual Dictionary<string, string> Headers => new();
+    protected virtual List<KeyValuePair<string, string>> Cookies => [];
+    protected virtual Dictionary<string, string> Headers => [];
 
-    public BaseExternalData()
+    private bool _disposed;
+
+    protected BaseExternalData()
     {
         _http = new HttpWrapper()
         {
@@ -16,7 +18,7 @@ public abstract class BaseExternalData<T> : IDisposable where T : class
         };
     }
 
-    public BaseExternalData(HttpWrapper http)
+    protected BaseExternalData(HttpWrapper http)
     {
         _http = http;
     }
@@ -39,8 +41,26 @@ public abstract class BaseExternalData<T> : IDisposable where T : class
         return await _http.GET<T>(url);
     }
 
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            if (disposing)
+            {
+                _http?.Dispose();
+            }
+            _disposed = true;
+        }
+    }
+
     public void Dispose()
     {
-        _http?.Dispose();
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    ~BaseExternalData()
+    {
+        Dispose(false);
     }
 }

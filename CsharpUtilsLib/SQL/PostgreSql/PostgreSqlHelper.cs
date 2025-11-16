@@ -14,7 +14,7 @@ public class PostgreHelper : BaseSqlHelper
     protected override DbCommand ConfigureCommand(Query query, DbConnection connection)
     {
         SqlResult compiledSql = _compiler.Compile(query);
-        NpgsqlCommand command = new NpgsqlCommand(compiledSql.Sql, (NpgsqlConnection)connection)
+        NpgsqlCommand command = new(compiledSql.Sql, (NpgsqlConnection)connection)
         {
             CommandTimeout = Timeout
         };

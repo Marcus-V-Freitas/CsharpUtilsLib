@@ -94,7 +94,7 @@ public static class GenericCompression
         {
             await using (var uncompressedStream = CreateCompressStream(compressionType, memoryStream, compressionLevel))
             {
-                await uncompressedStream.WriteAsync(bytes, 0, bytes.Length);
+                await uncompressedStream.WriteAsync(bytes);
             }
 
             return memoryStream.ToArray();

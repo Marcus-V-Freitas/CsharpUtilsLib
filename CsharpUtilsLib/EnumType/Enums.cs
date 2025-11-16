@@ -4,7 +4,7 @@ public static class Enums
 {
     public static Dictionary<int, string> GetEnumValuesAndNames<T>(string filter) where T : struct, Enum
     {
-        var enumDic = Enum.GetValues(typeof(T)).Cast<T>().ToDictionary(e => Convert.ToInt32(e), e => e.ToString());
+        var enumDic = Enum.GetValues<T>().ToDictionary(e => Convert.ToInt32(e), e => e.ToString());
 
         if (!string.IsNullOrEmpty(filter))
         {
@@ -18,7 +18,7 @@ public static class Enums
     {
         try
         {
-            var enumDic = Enum.GetValues(typeof(T)).Cast<T>().ToDictionary(e => Convert.ToInt32(e), e => e.ToString());
+            var enumDic = Enum.GetValues<T>().ToDictionary(e => Convert.ToInt32(e), e => e.ToString());
 
             if (!string.IsNullOrEmpty(filter))
             {
@@ -27,8 +27,10 @@ public static class Enums
 
             return enumDic.Select(x => x.Key).ToList();
         }
-        catch { }
-        return null!;
+        catch 
+        {
+            return null!;
+        }
     }
 
     public static string GetDisplayName(this Enum enumValue)

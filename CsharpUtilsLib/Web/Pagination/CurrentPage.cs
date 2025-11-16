@@ -1,16 +1,9 @@
 ﻿namespace CsharpUtilsLib.Web.Pagination;
 
-public sealed class CurrentPage
+public sealed class CurrentPage(int page, bool enabled, string text)
 {
-    public string Text { get; set; }
-    public int Page { get; set; }
-    public bool Enabled { get; set; }
+    public string Text { get; set; } = text;
+    public int Page { get; set; } = page;
+    public bool Enabled { get; set; } = enabled;
     public bool Active { get; set; }
-
-    public CurrentPage(int page, bool enabled, string text)
-    {
-        Page = page;
-        Enabled = enabled;
-        Text = text;
-    }
 }

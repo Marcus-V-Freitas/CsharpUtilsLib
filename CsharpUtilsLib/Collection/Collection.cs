@@ -17,29 +17,21 @@ public static class Collections
 
     public static List<T> Filter<T>(this List<T> list, Func<T, bool> filterFunc)
     {
-        List<T> filteredList = new List<T>();
-
-        foreach (var item in list)
-        {
-            if (filterFunc(item))
-            {
-                filteredList.Add(item);
-            }
-        }
-
-        return filteredList;
+        return [.. (from item in list
+                where filterFunc(item)
+                select item)];
     }
 
     public static string ConcatLists(this List<string> texts, string separator = "")
     {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new();
         texts.ForEach(text => sb.AppendLine($"{text}{separator}"));
         return sb.ToString();
     }
 
     public static T GetRandomElement<T>(this IList<T> collection)
     {
-        return collection[SafeRandom.Next(collection.Count)];
+        return collection[Random.Shared.Next(collection.Count)];
     }
 
     public static int[] BubbleSort(this int[] numbers)
@@ -128,7 +120,7 @@ public static class Collections
 
     public static bool AddIfNotNull<T>(this ICollection<T> source, T item)
     {
-        if (!source.ListIsNull() && item != null)
+        if (!source.ListIsNull() && !object.Equals(item, default(T)))
         {
             source.Add(item);
             return true;
@@ -139,7 +131,7 @@ public static class Collections
 
     public static bool AddIfNotNull<TKey, TValue>(this IDictionary<TKey, TValue> source, TKey key, TValue value)
     {
-        if (!source.ListIsNull() && key != null && value != null)
+        if (!source.ListIsNull() && !object.Equals(key, default(TKey)) && !object.Equals(value, default(TValue)))
         {
             source.Add(key, value);
             return true;
@@ -150,7 +142,7 @@ public static class Collections
 
     public static bool AddOrChangeValue<TKey, TValue>(this IDictionary<TKey, TValue> source, TKey key, TValue value)
     {
-        if (source.ListIsNull() || key == null || value == null)
+        if (source.ListIsNull() || object.Equals(key, default(TKey)) || object.Equals(value, default(TValue)))
         {
             return false;
         }
@@ -180,7 +172,7 @@ public static class Collections
 
     public static bool KeyValueIsNull<TKey, TValue>(this KeyValuePair<TKey, TValue> source)
     {
-        return source.Key == null || source.Value == null;
+        return object.Equals(source.Key, default(TKey)) || object.Equals(source.Value, default(TValue));
     }
 
     public static bool KeyValueIsNullOrEmpty(this KeyValuePair<string, string> keyValuePair)
@@ -237,12 +229,15 @@ public static class Collections
     {
         TValue result;
 
-        if (!source.ListIsNullOrEmpty() && key != null &&
-            (result = source.FirstOrDefault(x => x.Key!.Equals(key)).Value) != null)
+        if (!source.ListIsNullOrEmpty() && !object.Equals(key, default(TKey)))
         {
-            return result;
+            var found = source.FirstOrDefault(x => x.Key!.Equals(key));
+            result = found.Value;
+            if (!object.Equals(result, default(TValue)))
+            {
+                return result;
+            }
         }
-
         return default!;
     }
 
@@ -253,21 +248,21 @@ public static class Collections
             return null!;
         }
 
-        return source.ToList();
+        return [.. source];
     }
 
     public static List<T> ToDefaultListIfNull<T>(this IEnumerable<T> source)
     {
         if (source.ListIsNull())
         {
-            return new();
+            return [];
         }
 
-        return source.ToList();
+        return [.. source];
     }
 
     public static List<T> ToDistinctList<T>(this IEnumerable<T> source)
     {
-        return source.Distinct().ToList();
+        return [.. source.Distinct()];
     }
 }

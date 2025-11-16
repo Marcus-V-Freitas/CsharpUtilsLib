@@ -2,7 +2,7 @@
 
 public sealed class SQLParameterBuilder
 {
-    private readonly Dictionary<string, object> _parameters = new();
+    private readonly Dictionary<string, object> _parameters = [];
 
     public SQLParameterBuilder(string name, object value)
     {

@@ -14,7 +14,7 @@ public class MySqlHelper : BaseSqlHelper
     protected override DbCommand ConfigureCommand(Query query, DbConnection connection)
     {
         SqlResult compiledSql = _compiler.Compile(query);
-        MySqlCommand command = new MySqlCommand(compiledSql.Sql, (MySqlConnection)connection)
+        MySqlCommand command = new(compiledSql.Sql, (MySqlConnection)connection)
         {
             CommandTimeout = Timeout
         };

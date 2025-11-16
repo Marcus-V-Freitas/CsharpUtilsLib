@@ -30,7 +30,7 @@ public sealed class CompressionTests
     [InlineData("Hello world", "utf-8")]
     [InlineData("Hello world", "ascii")]
     [InlineData("Hello world", null)]
-    public void CompressAndDeCompressStringEncoding(string expectedValue, string encodingName)
+    public void CompressAndDeCompressStringEncoding(string expectedValue, string? encodingName)
     {
         Encoding? encoding = encodingName == null ? null : Encoding.GetEncoding(encodingName);
 
@@ -44,7 +44,7 @@ public sealed class CompressionTests
     [InlineData("Hello world", "utf-8")]
     [InlineData("Hello world", "ascii")]
     [InlineData("Hello world", null)]
-    public async Task CompressAndDeCompressStringEncodingAsync(string expectedValue, string encodingName)
+    public async Task CompressAndDeCompressStringEncodingAsync(string expectedValue, string? encodingName)
     {
         Encoding? encoding = encodingName == null ? null : Encoding.GetEncoding(encodingName);
 

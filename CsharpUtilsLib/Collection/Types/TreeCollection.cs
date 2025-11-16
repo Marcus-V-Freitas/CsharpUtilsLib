@@ -16,7 +16,7 @@
 
         public TreeNode<TKey, TValue> SearchByKey(TKey key, TreeNode<TKey, TValue> currentNode)
         {
-            if (currentNode == null || key == null || currentNode!.Key!.Equals(key))
+            if (currentNode == null || object.Equals(key, default(TKey)) || currentNode!.Key!.Equals(key))
                 return currentNode!;
 
             foreach (var child in currentNode.Children)

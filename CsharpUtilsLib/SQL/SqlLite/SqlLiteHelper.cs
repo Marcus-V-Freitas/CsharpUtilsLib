@@ -14,7 +14,7 @@ public class SqlLiteHelper : BaseSqlHelper
     protected override DbCommand ConfigureCommand(Query query, DbConnection connection)
     {
         SqlResult compiledSql = _compiler.Compile(query);
-        SQLiteCommand command = new SQLiteCommand(compiledSql.Sql, (SQLiteConnection)connection)
+        SQLiteCommand command = new(compiledSql.Sql, (SQLiteConnection)connection)
         {
             CommandTimeout = Timeout
         };

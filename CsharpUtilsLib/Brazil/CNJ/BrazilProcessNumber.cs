@@ -57,7 +57,7 @@ public sealed class BrazilProcessNumber
         string ramo = clearProcessNumber.Substring(clearProcessNumber.Length - 7, 1);
         string anoDeInicio = clearProcessNumber.Substring(clearProcessNumber.Length - 11, 4);
         int length = clearProcessNumber.Length - 13;
-        string numeroSequencial = clearProcessNumber.Substring(0, length).PadLeft(7, '0');
+        string numeroSequencial = clearProcessNumber[..length].PadLeft(7, '0');
         int calculatedDigit = 98 - int.Parse(CalculateMod(numeroSequencial + anoDeInicio + ramo + tribunal + vara + "00", "97"));
         var result = int.Parse(extractedDigit) == calculatedDigit;
 
@@ -77,6 +77,20 @@ public sealed class BrazilProcessNumber
                Ramo.GetHashCode() +
                Tribunal.GetHashCode() +
                Vara.GetHashCode();
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is BrazilProcessNumber other)
+        {
+            return NumeroSequencial == other.NumeroSequencial &&
+                   DigitoVerificador == other.DigitoVerificador &&
+                   AnoDeInicio == other.AnoDeInicio &&
+                   Ramo == other.Ramo &&
+                   Tribunal == other.Tribunal &&
+                   Vara == other.Vara;
+        }
+        return false;
     }
 
     public override string ToString()

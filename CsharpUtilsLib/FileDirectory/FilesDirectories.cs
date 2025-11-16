@@ -10,7 +10,7 @@ public static class FilesDirectories
             {
                 File.Delete(filePath);
             }
-            catch { }
+            catch {}
         }
     }
 
@@ -31,13 +31,11 @@ public static class FilesDirectories
         try
         {
             // Put the byte array into a stream and rewind it to the beginning
-            using (var ms = new MemoryStream(bytes))
-            {
-                ms.Flush();
-                ms.Position = 0;
-                var myDoc = new XmlDocument();
-                myDoc.Load(ms);
-            }
+            using var ms = new MemoryStream(bytes);
+            ms.Flush();
+            ms.Position = 0;
+            var myDoc = new XmlDocument();
+            myDoc.Load(ms);
             return true;
         }
         catch
@@ -105,7 +103,7 @@ public static class FilesDirectories
 
     public static long GetDirectorySizeContent(string directoryPath)
     {
-        DirectoryInfo directory = new DirectoryInfo(directoryPath);
+        DirectoryInfo directory = new(directoryPath);
 
         long size = 0;
 
@@ -130,7 +128,7 @@ public static class FilesDirectories
 
     public static void ClearDirectoryContent(string directoryPath)
     {
-        DirectoryInfo directory = new DirectoryInfo(directoryPath);
+        DirectoryInfo directory = new(directoryPath);
 
         foreach (FileInfo file in directory.GetFiles())
         {
@@ -165,23 +163,17 @@ public static class FilesDirectories
     public static void CreateTextFileWithContent(string directoryPath, string fileName, string fileContent)
     {
         string filePath = Path.Combine(directoryPath, fileName);
-        using (var writer = new StreamWriter(filePath))
-        {
-            writer.Write(fileContent);
-        }
+        using var writer = new StreamWriter(filePath);
+        writer.Write(fileContent);
     }
 
     public static void MergeFiles(string[] fileNames, string outputFileName)
     {
-        using (var output = File.Create(outputFileName))
+        using var output = File.Create(outputFileName);
+        foreach (string file in fileNames)
         {
-            foreach (string file in fileNames)
-            {
-                using (var input = File.OpenRead(file))
-                {
-                    input.CopyTo(output);
-                }
-            }
+            using var input = File.OpenRead(file);
+            input.CopyTo(output);
         }
     }
 }

@@ -27,24 +27,22 @@ public static class TasksHelpers
 
     public static async Task ExecuteWithTimeout(this Action action, TimeSpan timeout)
     {
-        using (var cts = new CancellationTokenSource())
+        using var cts = new CancellationTokenSource();
+        var task = Task.Run(action, cts.Token);
+        if (await Task.WhenAny(task, Task.Delay(timeout, cts.Token)) == task)
         {
-            var task = Task.Run(action, cts.Token);
-            if (await Task.WhenAny(task, Task.Delay(timeout, cts.Token)) == task)
-            {
-                cts.Cancel();
-                await task;  // Ensure any exceptions are rethrown
-            }
-            else
-            {
-                throw new TimeoutException("The operation has timed out.");
-            }
+            await cts.CancelAsync();
+            await task;  // Ensure any exceptions are rethrown
+        }
+        else
+        {
+            throw new TimeoutException("The operation has timed out.");
         }
     }
 
     public static Task<Task<T>> WhenAnyWithCompletionSource<T>(IEnumerable<Task<T>> tasks)
     {
-        TaskCompletionSource<Task<T>> tcs = new TaskCompletionSource<Task<T>>();
+        TaskCompletionSource<Task<T>> tcs = new();
 
         foreach (Task<T> task in tasks)
         {
@@ -58,7 +56,7 @@ public static class TasksHelpers
 
     public static async Task WhenAllWithThrottling(IEnumerable<Task> tasks, int maxDegreeOfParallelism)
     {
-        SemaphoreSlim semaphore = new SemaphoreSlim(maxDegreeOfParallelism, maxDegreeOfParallelism);
+        SemaphoreSlim semaphore = new(maxDegreeOfParallelism, maxDegreeOfParallelism);
 
         IEnumerable<Task> tasksWithSemaphore = tasks.Select(async task =>
         {

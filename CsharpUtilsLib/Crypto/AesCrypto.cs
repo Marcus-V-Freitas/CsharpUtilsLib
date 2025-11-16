@@ -5,12 +5,10 @@ public static class AesCrypto
     public static string Encrypt(string text, string secret)
     {
         // generate salt
-        byte[] key;
-        byte[] iv;
         byte[] salt = new byte[8];
 
         RandomNumberGenerator.Fill(salt);
-        DeriveKeyAndIV(secret, salt, out key, out iv);
+        DeriveKeyAndIV(secret, salt, out byte[] key, out byte[] iv);
         // encrypt bytes
         byte[] encryptedBytes = EncryptStringToBytesAes(text, key, iv);
         // add salt as first 8 bytes
@@ -41,10 +39,10 @@ public static class AesCrypto
     private static void DeriveKeyAndIV(string secret, byte[] salt, out byte[] key, out byte[] iv)
     {
         // generate key and iv
-        List<byte> concatenatedHashes = new List<byte>(48);
+        List<byte> concatenatedHashes = new(48);
 
         byte[] password = Encoding.UTF8.GetBytes(secret);
-        byte[] currentHash = Array.Empty<byte>();
+        byte[] currentHash = [];
         MD5 md5 = MD5.Create();
         bool enoughBytesForKey = false;
 
@@ -89,20 +87,15 @@ public static class AesCrypto
             ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
 
             msEncrypt = new MemoryStream();
-            using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
-            {
-                using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
-                {
-                    swEncrypt.Write(text);
-                    swEncrypt.Flush();
-                    swEncrypt.Close();
-                }
-            }
+            using CryptoStream csEncrypt = new(msEncrypt, encryptor, CryptoStreamMode.Write);
+            using StreamWriter swEncrypt = new(csEncrypt);
+            swEncrypt.Write(text);
+            swEncrypt.Flush();
+            swEncrypt.Close();
         }
         finally
         {
-            if (aesAlg != null)
-                aesAlg.Dispose();
+            aesAlg?.Dispose();
         }
 
         return msEncrypt.ToArray();
@@ -123,22 +116,15 @@ public static class AesCrypto
             aesAlg.IV = iv;
 
             ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
-            using (MemoryStream msDecrypt = new MemoryStream(encryptedText))
-            {
-                using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
-                {
-                    using (StreamReader srDecrypt = new StreamReader(csDecrypt))
-                    {
-                        text = srDecrypt.ReadToEnd();
-                        srDecrypt.Close();
-                    }
-                }
-            }
+            using MemoryStream msDecrypt = new(encryptedText);
+            using CryptoStream csDecrypt = new(msDecrypt, decryptor, CryptoStreamMode.Read);
+            using StreamReader srDecrypt = new(csDecrypt);
+            text = srDecrypt.ReadToEnd();
+            srDecrypt.Close();
         }
         finally
         {
-            if (aesAlg != null)
-                aesAlg.Dispose();
+            aesAlg?.Dispose();
         }
         return text;
     }

@@ -10,18 +10,18 @@ public abstract class FastFileReaderHelper : IDisposable
     protected string _newLine;
     protected byte _delimiterByte;
     protected byte _newLineByte;
-    protected Pipe _pipe = new Pipe(new PipeOptions(null, null, null, 4096, 2048, 1024, true));
+    protected Pipe _pipe = new(new PipeOptions(null, null, null, 4096, 2048, 1024, true));
     protected Encoding _encoding = Encoding.UTF8;
     protected int _batchSize = 150000;
     protected bool _skipFirstRow = false;
 
-    public FastFileReaderHelper(string inputFile, List<string> headers, string delimiter, List<string> skipHeaders = null!, string newLine = "\n")
+    protected FastFileReaderHelper(string inputFile, List<string> headers, string delimiter, List<string> skipHeaders = null!, string newLine = "\n")
     {
         _delimiter = delimiter;
         _newLine = newLine;
         _inputFile = inputFile;
         _headers = headers;
-        _skipHeaders = (skipHeaders ?? new List<string>());
+        _skipHeaders = (skipHeaders ?? []);
 
         SetEncodingVariables();
     }
@@ -60,25 +60,23 @@ public abstract class FastFileReaderHelper : IDisposable
 
         try
         {
-            using (FileStream file = File.Open(_inputFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using FileStream file = File.Open(_inputFile, FileMode.Open, FileAccess.Read, FileShare.Read);
+            while (true)
             {
-                while (true)
+                Memory<byte> memory = writer.GetMemory();
+                int count = file.Read(memory.Span);
+
+                if (count == 0)
                 {
-                    Memory<byte> memory = writer.GetMemory();
-                    int count = file.Read(memory.Span);
+                    break;
+                }
 
-                    if (count == 0)
-                    {
-                        break;
-                    }
+                writer.Advance(count);
+                FlushResult result = await writer.FlushAsync();
 
-                    writer.Advance(count);
-                    FlushResult result = await writer.FlushAsync();
-
-                    if (result.IsCompleted)
-                    {
-                        break;
-                    }
+                if (result.IsCompleted)
+                {
+                    break;
                 }
             }
         }
@@ -237,12 +235,12 @@ public abstract class FastFileReaderHelper : IDisposable
     {
         if (skipPreviousPosition)
         {
-            span = span.Slice(delimiterPosition + 1);
+            span = span[(delimiterPosition + 1)..];
         }
 
         delimiterPosition = span.IndexOf(_delimiterByte);
 
-        return _encoding.GetString(delimiterPosition <= -1 ? span : span.Slice(0, delimiterPosition));
+        return _encoding.GetString(delimiterPosition <= -1 ? span : span[..delimiterPosition]);
     }
 
     protected virtual void RemoveFirstRow()
@@ -256,5 +254,11 @@ public abstract class FastFileReaderHelper : IDisposable
 
     protected abstract void BuildBatchRows();
 
-    public abstract void Dispose();
+    protected abstract void Dispose(bool disposing);
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
 }

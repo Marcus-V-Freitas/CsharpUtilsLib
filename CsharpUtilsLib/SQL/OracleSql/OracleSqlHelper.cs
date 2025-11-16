@@ -14,7 +14,7 @@ public class OracleSqlHelper : BaseSqlHelper
     protected override DbCommand ConfigureCommand(Query query, DbConnection connection)
     {
         SqlResult compiledSql = _compiler.Compile(query);
-        OracleCommand command = new OracleCommand(compiledSql.Sql, (OracleConnection)connection)
+        OracleCommand command = new(compiledSql.Sql, (OracleConnection)connection)
         {
             CommandTimeout = Timeout
         };

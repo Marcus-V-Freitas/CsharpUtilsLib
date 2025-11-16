@@ -1,6 +1,6 @@
 namespace CsharpUtilsLib.Web;
 
-public static class Web
+public static partial class Web
 {
     public static List<Cookie> GetCookies(this CookieContainer cookiesContainer, string url)
     {
@@ -22,16 +22,20 @@ public static class Web
     public static FormUrlEncodedContent ToFormPostData(this IDictionary<string, string> postData, string contentType = "application/x-www-form-urlencoded", string charset = "UTF-8")
     {
         var content = new FormUrlEncodedContent(postData);
-        content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
-        content.Headers.ContentType.CharSet = charset;
+        content.Headers.ContentType = new MediaTypeHeaderValue(contentType)
+        {
+            CharSet = charset
+        };
         return content;
     }
 
     public static FormUrlEncodedContent ToFormPostData(this IEnumerable<KeyValuePair<string, string>> postData, string contentType = "application/x-www-form-urlencoded", string charset = "UTF-8")
     {
         var content = new FormUrlEncodedContent(postData);
-        content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
-        content.Headers.ContentType.CharSet = charset;
+        content.Headers.ContentType = new MediaTypeHeaderValue(contentType)
+        {
+            CharSet = charset
+        };
         return content;
     }
 
@@ -85,7 +89,7 @@ public static class Web
             postDataParams[key] = value;
         }
 
-        string postData = QueryHelpers.AddQueryString(string.Empty, postDataParams).TrimStart('?');
+        string postData = QueryHelpers.AddQueryString(string.Empty, postDataParams!).TrimStart('?');
 
         return postData.Replace(tempValueToEmptySpaces, "+");
     }
@@ -102,14 +106,14 @@ public static class Web
             { queryString, value }
         };
 
-        return QueryHelpers.AddQueryString(url, queryStringParam);
+        return QueryHelpers.AddQueryString(url, queryStringParam!);
     }
 
     public static string AddQueryString(string url, Dictionary<string, string> queryParams)
     {
         if (!string.IsNullOrEmpty(url) || !queryParams.DictionaryIsNullOrEmpty())
         {
-            return new Uri(QueryHelpers.AddQueryString(url, queryParams)).AbsoluteUri;
+            return new Uri(QueryHelpers.AddQueryString(url, queryParams!)).AbsoluteUri;
         }
 
         return url;
@@ -152,6 +156,9 @@ public static class Web
             return null!;
         }
 
-        return Regex.Replace(html, @"\r\n?|\n|\t", "", RegexOptions.Compiled).Trim();
+        return HtmlClenRegex().Replace(html, "").Trim();
     }
+
+    [GeneratedRegex(@"\r\n?|\n|\t", RegexOptions.Compiled)]
+    private static partial Regex HtmlClenRegex();
 }

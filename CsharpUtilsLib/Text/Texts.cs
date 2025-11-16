@@ -25,7 +25,7 @@ public static class Texts
             return null!;
         }
 
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new();
         foreach (char c in text)
         {
             if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
@@ -40,19 +40,17 @@ public static class Texts
     {
         if (string.IsNullOrEmpty(text) || separator == null)
         {
-            return Enumerable.Empty<string>();
+            return [];
         }
 
-        IEnumerable<string> foundTexts = text.Split(new[] { separator }, StringSplitOptions.None);
+        IEnumerable<string> foundTexts = text.Split([separator], StringSplitOptions.None);
         return foundTexts.Where(x => !string.IsNullOrEmpty(x));
     }
 
     public static string GenerateRandomPassword(int length)
     {
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        return new string(Enumerable.Repeat(chars, length)
-                                    .Select(s => s[SafeRandom.Next(s.Length)])
-                                    .ToArray());
+        return new string([.. Enumerable.Repeat(chars, length).Select(s => s[Random.Shared.Next(s.Length)])]);
     }
 
     public static bool IsSequentialRepetition(this string input)
@@ -128,7 +126,7 @@ public static class Texts
             return null!;
         }
 
-        StringBuilder sb = new StringBuilder(input);
+        StringBuilder sb = new(input);
         foreach (string delimiter in listDelimiters)
         {
             sb.Replace(delimiter, newVal);
@@ -223,10 +221,9 @@ public static class Texts
         if (string.IsNullOrEmpty(input))
             input = string.Empty;
 
-        return Regex.Matches(input, @$"{regex}", RegexOptions.Compiled)
+        return [.. Regex.Matches(input, @$"{regex}", RegexOptions.Compiled)
                     .Where(x => x.Success && !string.IsNullOrEmpty(x.Value))
-                    .Select(x => x.Value)
-                    .ToList();
+                    .Select(x => x.Value)];
     }
 
     public static string RemoveDuplicateWords(string text)
@@ -237,7 +234,7 @@ public static class Texts
         }
 
         string[] words = text.Split(' ');
-        HashSet<string> uniqueWords = new HashSet<string>(words);
+        HashSet<string> uniqueWords = [.. words];
         return string.Join(" ", uniqueWords);
     }
 
@@ -284,7 +281,7 @@ public static class Texts
             return null!;
         }
 
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new();
         foreach (char c in source)
         {
             sb.Append(c);
@@ -297,7 +294,7 @@ public static class Texts
     {
         if (string.IsNullOrEmpty(value))
         {
-            return new string[] { string.Empty };
+            return [string.Empty];
         }
 
         if (maxSplit == 0)
@@ -307,17 +304,17 @@ public static class Texts
 
         if (value.Count(x => x == delimiter) + 1 >= maxSplit)
         {
-            return value.Split(new char[] { delimiter }, maxSplit);
+            return value.Split([delimiter], maxSplit);
         }
 
-        return new string[] { value };
+        return [value];
     }
 
     public static string[] SpecificSplit(this string value, string delimiter, int maxSplit = 0)
     {
         if (string.IsNullOrEmpty(value))
         {
-            return new string[] { string.Empty };
+            return [string.Empty];
         }
 
         if (maxSplit == 0)
@@ -330,7 +327,7 @@ public static class Texts
             return value.Split(delimiter, maxSplit);
         }
 
-        return new string[] { value };
+        return [value];
     }
 
     public static int Count(this string value, string substr, StringComparison strComp = StringComparison.CurrentCulture)
@@ -351,12 +348,12 @@ public static class Texts
 
     public static string OnlyNumbers(this string text)
     {
-        return new string((text ?? string.Empty).Where(c => Char.IsDigit(c)).ToArray());
+        return new string([.. (text ?? string.Empty).Where(c => Char.IsDigit(c))]);
     }
 
     public static string SafeSubstring(this string value, int startIndex, int length)
     {
-        return new string((value ?? string.Empty).Skip(startIndex).Take(length).ToArray());
+        return new string([.. (value ?? string.Empty).Skip(startIndex).Take(length)]);
     }
     public static byte[] ToByteArray(this string text)
     {
@@ -385,15 +382,6 @@ public static class Texts
         return Encoding.ASCII.GetString(Encoding.ASCII.GetBytes(text));
     }
 
-    public static string ToUTF8(this string text)
-    {
-        if (string.IsNullOrEmpty(text))
-        {
-            return null!;
-        }
-        return Encoding.UTF8.GetString(Encoding.UTF8.GetBytes(text));
-    }
-
     public static string ToAscii(this byte[] bytes)
     {
         try
@@ -408,6 +396,15 @@ public static class Texts
         {
             return string.Empty;
         }
+    }
+
+    public static string ToUTF8(this string text)
+    {
+        if (string.IsNullOrEmpty(text))
+        {
+            return null!;
+        }
+        return Encoding.UTF8.GetString(Encoding.UTF8.GetBytes(text));
     }
 
     public static string ToUTF8(this byte[] bytes)
@@ -433,19 +430,19 @@ public static class Texts
             return null!;
         }
 
-        string[] romanNumerals = { "I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M" };
-        int[] values = { 1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000 };
+        string[] romanNumerals = ["I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M"];
+        int[] values = [1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000];
 
-        string roman = "";
+        StringBuilder roman = new();
 
         for (int i = 12; i >= 0; i--)
         {
             while (number >= values[i])
             {
                 number -= values[i];
-                roman += romanNumerals[i];
+                roman.Append(romanNumerals[i]);
             }
         }
-        return roman;
+        return roman.ToString();
     }
 }

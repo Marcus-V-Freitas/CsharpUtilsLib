@@ -5,7 +5,7 @@ namespace CsharpUtilsLib.Collection.Types
     public sealed class CacheCollection<TKey, TValue> : IDisposable
         where TKey : notnull
     {
-        private readonly Dictionary<TKey, CacheItem<TValue>> _cache = new();
+        private readonly Dictionary<TKey, CacheItem<TValue>> _cache = [];
         private readonly TimeSpan _cacheDuration;
         private readonly Timer _cacheTimer;
 
@@ -19,7 +19,7 @@ namespace CsharpUtilsLib.Collection.Types
 
         public bool AddOrChangeToCache(TKey key, TValue value)
         {
-            _cache.AddOrChangeValue(key, new CacheItem<TValue>(value, DateTime.Now));
+            _cache.AddOrChangeValue(key, new CacheItem<TValue>(value, DateTime.UtcNow));
             return true;
         }
 
@@ -27,7 +27,7 @@ namespace CsharpUtilsLib.Collection.Types
         {
             if (_cache.TryGetValue(key, out CacheItem<TValue> cacheItem))
             {
-                if (DateTime.Now - cacheItem.CreationTime <= _cacheDuration)
+                if (DateTime.UtcNow - cacheItem.CreationTime <= _cacheDuration)
                 {
                     return cacheItem.Value;
                 }
@@ -44,7 +44,7 @@ namespace CsharpUtilsLib.Collection.Types
         {
             _cacheTimer.Stop();
 
-            DateTime now = DateTime.Now;
+            DateTime now = DateTime.UtcNow;
 
             foreach (var value in _cache.Values)
             {
@@ -70,16 +70,10 @@ namespace CsharpUtilsLib.Collection.Types
             Reset();
         }
 
-        private struct CacheItem<T>
+        private struct CacheItem<T>(T value, DateTime creationTime)
         {
-            public T Value { get; private set; }
-            public DateTime CreationTime { get; private set; }
-
-            public CacheItem(T value, DateTime creationTime)
-            {
-                Value = value;
-                CreationTime = creationTime;
-            }
+            public T Value { get; private set; } = value;
+            public DateTime CreationTime { get; private set; } = creationTime;
 
             public void Reset(DateTime creationDate)
             {

@@ -4,8 +4,9 @@ namespace CsharpUtilsLib.FileDirectory.FastReader;
 
 public sealed class ParquetBuildReaderHelper : FastFileReaderHelper
 {
+    private bool _disposed;
     private readonly ParquetFileWriter _parquetWriter;
-    private Dictionary<string, List<string>> _columnsToExport;
+    private readonly Dictionary<string, List<string>> _columnsToExport;
     private IEnumerable<byte[]> _sequencesOfCharactersToRemove;
 
     public ParquetBuildReaderHelper(string outputFile, string inputFile, List<string> headers, string delimiter, List<string> skipHeaders = null!, List<string> sequencesOfCharactersToRemove = null!, string newLine = "\n") : base(inputFile, headers, delimiter, skipHeaders, newLine)
@@ -32,7 +33,7 @@ public sealed class ParquetBuildReaderHelper : FastFileReaderHelper
 
     private Dictionary<string, List<string>> InitializeTempDict()
     {
-        Dictionary<string, List<string>> columnsToExport = new Dictionary<string, List<string>>();
+        Dictionary<string, List<string>> columnsToExport = [];
 
         foreach (string headerToExport in _headers)
         {
@@ -41,7 +42,7 @@ public sealed class ParquetBuildReaderHelper : FastFileReaderHelper
                 continue;
             }
 
-            columnsToExport.Add(headerToExport, new List<string>());
+            columnsToExport.Add(headerToExport, []);
         }
 
         return columnsToExport;
@@ -49,7 +50,7 @@ public sealed class ParquetBuildReaderHelper : FastFileReaderHelper
 
     private Column[] DefineColumnsSchema()
     {
-        List<Column> columnToExport = new List<Column>();
+        List<Column> columnToExport = [];
 
         foreach (string fieldName in _headers)
         {
@@ -61,7 +62,7 @@ public sealed class ParquetBuildReaderHelper : FastFileReaderHelper
             columnToExport.Add(new Column<string>(fieldName));
         }
 
-        return columnToExport.ToArray();
+        return [.. columnToExport];
     }
 
     private void ClearDictRows()
@@ -72,7 +73,7 @@ public sealed class ParquetBuildReaderHelper : FastFileReaderHelper
         }
     }
 
-    private int IndexOfSequence(ReadOnlySpan<byte> span, int startIndex, byte[] sequeceOfCharacters)
+    private static int IndexOfSequence(ReadOnlySpan<byte> span, int startIndex, byte[] sequeceOfCharacters)
     {
         for (int i = startIndex; i <= span.Length - sequeceOfCharacters.Length; i++)
         {
@@ -106,10 +107,8 @@ public sealed class ParquetBuildReaderHelper : FastFileReaderHelper
                     continue;
                 }
 
-                using (LogicalColumnWriter<string> logicalColumnWriter = rowGroup.NextColumn().LogicalWriter<string>())
-                {
-                    logicalColumnWriter.WriteBatch(_columnsToExport[headerToExport].ToArray());
-                }
+                using LogicalColumnWriter<string> logicalColumnWriter = rowGroup.NextColumn().LogicalWriter<string>();
+                logicalColumnWriter.WriteBatch([.. _columnsToExport[headerToExport]]);
             }
         }
 
@@ -121,7 +120,7 @@ public sealed class ParquetBuildReaderHelper : FastFileReaderHelper
         _columnsToExport[_headers[index]].Add(rowValue);
     }
 
-    private void RemoveWrongCharactersFromSpan(ref ReadOnlySpan<byte> span, byte[] sequeceOfCharacters)
+    private static void RemoveWrongCharactersFromSpan(ref ReadOnlySpan<byte> span, byte[] sequeceOfCharacters)
     {
         if (span.IndexOf(sequeceOfCharacters) == -1)
         {
@@ -130,15 +129,15 @@ public sealed class ParquetBuildReaderHelper : FastFileReaderHelper
 
         int index = -1;
 
-        while ((index = IndexOfSequence(span, index + 1, sequeceOfCharacters)) != -1)
+        while ((index = ParquetBuildReaderHelper.IndexOfSequence(span, index + 1, sequeceOfCharacters)) != -1)
         {
-            ReadOnlySpan<byte> beforeSpan = span.Slice(0, index);
-            ReadOnlySpan<byte> afterSpan = span.Slice(index + sequeceOfCharacters.Length);
+            ReadOnlySpan<byte> beforeSpan = span[..index];
+            ReadOnlySpan<byte> afterSpan = span[(index + sequeceOfCharacters.Length)..];
 
             // Combine the two spans into a single contiguous span (excluding the byte at indexToRemove).
             Span<byte> result = new byte[beforeSpan.Length + afterSpan.Length];
             beforeSpan.CopyTo(result);
-            afterSpan.CopyTo(result.Slice(beforeSpan.Length));
+            afterSpan.CopyTo(result[beforeSpan.Length..]);
             span = result;
         }
     }
@@ -168,8 +167,15 @@ public sealed class ParquetBuildReaderHelper : FastFileReaderHelper
         ClearDictRows();
     }
 
-    public override void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _parquetWriter.Dispose();
+        if (!_disposed)
+        {
+            if (disposing)
+            {
+                _parquetWriter.Dispose();
+            }
+            _disposed = true;
+        }
     }
 }

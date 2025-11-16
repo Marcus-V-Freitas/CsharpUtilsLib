@@ -4,7 +4,7 @@ public static class Reflections
 {
     public static string GetDisplayName(this PropertyInfo property)
     {
-        return (property.GetCustomAttribute(typeof(DisplayAttribute)) as DisplayAttribute)?.Name!;
+        return property.GetCustomAttribute<DisplayAttribute>()?.Name!;
     }
 
     public static T DefaultConstructor<T>() where T : class
@@ -16,21 +16,17 @@ public static class Reflections
     public static object CreateInstance(this Type type)
     {
         var constructorInfo = type.GetConstructor(Type.EmptyTypes);
-        if (constructorInfo == null)
-        {
-            throw new ArgumentException($"Type '{type.Name}' does not have a parameterless constructor.");
-        }
-        return constructorInfo.Invoke(null);
+        return constructorInfo == null
+            ? throw new ArgumentException($"Type '{type.Name}' does not have a parameterless constructor.")
+            : constructorInfo.Invoke(null);
     }
 
     public static object CreateInstance(this Type type, params object[] args)
     {
-        var constructorInfo = type.GetConstructor(args.Select(arg => arg.GetType()).ToArray());
-        if (constructorInfo == null)
-        {
-            throw new ArgumentException($"Type '{type.Name}' does not have a constructor with the specified parameter types.");
-        }
-        return constructorInfo.Invoke(args);
+        var constructorInfo = type.GetConstructor([.. args.Select(arg => arg.GetType())]);
+        return constructorInfo == null
+            ? throw new ArgumentException($"Type '{type.Name}' does not have a constructor with the specified parameter types.")
+            : constructorInfo.Invoke(args);
     }
 
     public static object InvokeMethod(this object obj, string methodName, object[] args)

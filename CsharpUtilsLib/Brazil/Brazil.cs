@@ -1,6 +1,6 @@
 namespace CsharpUtilsLib.Validations.Brazil;
 
-public static class Brazil
+public static partial class Brazil
 {
     public static List<string> ExtractBrazilProcessesNumbersFromString(string text)
     {
@@ -17,7 +17,7 @@ public static class Brazil
 
         input = input.Trim();
         input = input.PadLeft(11, '0');
-        return input.Substring(0, 3) + "." + input.Substring(3, 5) + "." + input.Substring(8, 2) + "-" + input.Substring(10, 1);
+        return input[..3] + "." + input.Substring(3, 5) + "." + input.Substring(8, 2) + "-" + input.Substring(10, 1);
     }
 
     public static string FormatCPF(string input)
@@ -29,7 +29,7 @@ public static class Brazil
 
         input = input.Trim();
         input = input.PadLeft(11, '0');
-        return input.Substring(0, 3) + "." + input.Substring(3, 3) + "." + input.Substring(6, 3) + "-" + input.Substring(9, 2);
+        return input[..3] + "." + input.Substring(3, 3) + "." + input.Substring(6, 3) + "-" + input.Substring(9, 2);
     }
 
     public static string FormatCNPJ(string input)
@@ -41,7 +41,7 @@ public static class Brazil
 
         input = input.Trim();
         input = input.PadLeft(14, '0');
-        return input.Substring(0, 2) + "." + input.Substring(2, 3) + "." + input.Substring(5, 3) + "/" + input.Substring(8, 4) + "-" + input.Substring(12, 2);
+        return input[..2] + "." + input.Substring(2, 3) + "." + input.Substring(5, 3) + "/" + input.Substring(8, 4) + "-" + input.Substring(12, 2);
     }
 
     public static string FormatPhoneNumber(string input)
@@ -52,9 +52,9 @@ public static class Brazil
         }
 
         return string.Format("({0}) {1}-{2}",
-            input.Substring(0, 2),
+            input[..2],
             input.Substring(2, 4),
-            input.Substring(6));
+            input[6..]);
     }
 
     public static string FormatCEP(string input)
@@ -122,12 +122,12 @@ public static class Brazil
             return false;
         }
 
-        if (!Regex.IsMatch(input[..1], "[0-3]", RegexOptions.Compiled))
+        if (!DigitosFinaisRegex().IsMatch(input[..1]))
         {
             return false;
         }
 
-        if (!Regex.IsMatch(input.Substring(1, 1), "[0-1]", RegexOptions.Compiled))
+        if (!DigitoRegex().IsMatch(input.AsSpan(1, 1)))
         {
             return false;
         }
@@ -142,8 +142,8 @@ public static class Brazil
             if (string.IsNullOrEmpty(cnpj))
                 return false;
 
-            int[] multiple1 = new int[12] { 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
-            int[] multiple2 = new int[13] { 6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
+            int[] multiple1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+            int[] multiple2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
 
             cnpj = cnpj.Trim().Replace(".", "").Replace("-", "").Replace("/", "");
             if (cnpj.Length != 14)
@@ -193,8 +193,8 @@ public static class Brazil
             if (string.IsNullOrEmpty(cpf))
                 return false;
 
-            int[] multiple1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
-            int[] multiple2 = new int[10] { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
+            int[] multiple1 = [10, 9, 8, 7, 6, 5, 4, 3, 2];
+            int[] multiple2 = [11, 10, 9, 8, 7, 6, 5, 4, 3, 2];
 
             cpf = cpf.Trim().Replace(".", "").Replace("-", "");
             if (cpf.Length != 11)
@@ -282,7 +282,7 @@ public static class Brazil
             return false;
         }
 
-        short[] multipliers = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 4, 3 };
+        short[] multipliers = [10, 9, 8, 7, 6, 5, 4, 3, 2, 4, 3];
         int finalDigit, calculateDigit = 0, informedDigit, iDigito = 0;
 
         input = new String('0', 13 - input.Length) + input;
@@ -315,4 +315,9 @@ public static class Brazil
 
         return calculateDigit == informedDigit;
     }
+
+    [GeneratedRegex("[0-1]", RegexOptions.Compiled)]
+    private static partial Regex DigitoRegex();
+    [GeneratedRegex("[0-3]", RegexOptions.Compiled)]
+    private static partial Regex DigitosFinaisRegex();
 }

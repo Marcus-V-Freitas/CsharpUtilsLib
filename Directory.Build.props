@@ -1,0 +1,30 @@
+<Project>
+	<PropertyGroup>
+		<!-- Força warnings como erros -->
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+		<!-- Análise focada em qualidade, não estilo -->
+		<AnalysisLevel>latest</AnalysisLevel>
+		<AnalysisMode>Minimum</AnalysisMode>
+		<EnableNETAnalyzers>true</EnableNETAnalyzers>
+
+		<!-- DESABILITA análise de estilo no build -->
+		<EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+
+		<!-- Nullable para prevenir NullReferenceException -->
+		<Nullable>enable</Nullable>
+
+		<!-- Configurações básicas -->
+		<LangVersion>latest</LangVersion>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<NoWarn>S4830;CS0618;S4423;SYSLIB0039;S101;S1075;S2486;S3267;S1699;S1751;S3011;S108</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- APENAS SonarAnalyzer - foca em bugs e code smells -->
+		<PackageReference Include="SonarAnalyzer.CSharp" Version="10.3.*">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+</Project>

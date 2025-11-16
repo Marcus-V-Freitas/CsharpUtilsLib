@@ -100,7 +100,7 @@ public static class Numerics
 
         for (int i = 0; i < count; i++)
         {
-            numbers.Add(SafeRandom.Next(min, max));
+            numbers.Add(Random.Shared.Next(min, max));
         }
         return numbers;
     }
@@ -193,7 +193,7 @@ public static class Numerics
 
     public static double Median(this IEnumerable<double> numbers)
     {
-        List<double> sortedNumbers = numbers.OrderBy(n => n).ToList();
+        List<double> sortedNumbers = [.. numbers.OrderBy(n => n)];
         int count = sortedNumbers.Count;
 
         if (count % 2 == 0)

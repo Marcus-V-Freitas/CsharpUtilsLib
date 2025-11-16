@@ -42,28 +42,29 @@ public static class Base32
             case '5': return 29;
             case '6': return 30;
             case '7': return 31;
+            default:
+                break;
         }
         return -1;
     }
 
     public static byte[] FromBase32String(string encoded)
     {
-        if (encoded == null)
-            throw new ArgumentNullException(nameof(encoded));
+        ArgumentNullException.ThrowIfNull(encoded);
 
         // Remove whitespace and padding. Note: the padding is used as hint 
         // to determine how many bits to decode from the last incomplete chunk
         // Also, canonicalize to all upper case
         encoded = encoded.Trim().TrimEnd('=').ToUpper();
         if (encoded.Length == 0)
-            return new byte[0];
+            return [];
 
         int outLength = encoded.Length * _shift / 8;
         byte[] result = new byte[outLength];
         int buffer = 0;
         int next = 0;
         int bitsLeft = 0;
-        int charValue = 0;
+        int charValue;
 
         foreach (char c in encoded)
         {
@@ -91,17 +92,14 @@ public static class Base32
 
     public static string ToBase32String(byte[] data, int offset, int length, bool padOutput = false)
     {
-        if (data == null)
-            throw new ArgumentNullException(nameof(data));
+        ArgumentNullException.ThrowIfNull(data);
 
-        if (offset < 0)
-            throw new ArgumentOutOfRangeException(nameof(offset));
+        ArgumentOutOfRangeException.ThrowIfNegative(offset);
 
-        if (length < 0)
-            throw new ArgumentOutOfRangeException(nameof(length));
+        ArgumentOutOfRangeException.ThrowIfNegative(length);
 
         if (offset + length > data.Length)
-            throw new ArgumentOutOfRangeException();
+            ArgumentOutOfRangeException.ThrowIfGreaterThan((offset + length), data.Length);
 
         if (length == 0)
             return "";
@@ -109,11 +107,10 @@ public static class Base32
         // SHIFT is the number of bits per output character, so the length of the
         // output is the length of the input multiplied by 8/SHIFT, rounded up.
         // The computation below will fail, so don't do it.
-        if (length >= 1 << 28)
-            throw new ArgumentOutOfRangeException(nameof(data));
+        ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(length, 1 << 28);
 
         int outputLength = (length * 8 + _shift - 1) / _shift;
-        StringBuilder result = new StringBuilder(outputLength);
+        StringBuilder result = new(outputLength);
 
         int last = offset + length;
         int buffer = data[offset++];

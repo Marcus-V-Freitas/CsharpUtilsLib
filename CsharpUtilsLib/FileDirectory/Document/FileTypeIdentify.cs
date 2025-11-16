@@ -8,12 +8,11 @@ namespace CsharpUtilsLib.FileDirectory.Document;
 /// https://filesignatures.net/index.php?page=all&order=DESCRIPTION&sort=DESC&alpha=R
 /// For more information mime types:
 /// https://docs.microsoft.com/en-us/previous-versions/office/office-2007-resource-kit/ee309278(v=office.12)?redirectedfrom=MSDN
-/// TODO: Determine specific type of based ZIP files
 /// </summary>
 public static class FileTypeIdentify
 {
     // all the file types to be put into one list
-    public static readonly List<FileType> FileTypes = FileTypeHelper.AllAvailableFormats();
+    public static readonly IReadOnlyList<FileType> FileTypes = FileTypeHelper.AllAvailableFormats();
 
     // number of bytes we read from a file
     public const int MaxHeaderSize = 560;  // some file formats have headers offset to 512 bytes

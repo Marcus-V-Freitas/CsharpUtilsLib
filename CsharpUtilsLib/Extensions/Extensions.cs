@@ -17,7 +17,7 @@ public static class Extensions
 
     public static T GetRandom<T>(this T[] source)
     {
-        return source[SafeRandom.Next(source.Length)];
+        return source[Random.Shared.Next(source.Length)];
     }
 
     public static T With<T>(this T item, Action<T> action)
@@ -39,7 +39,7 @@ public static class Extensions
 
     public static Result ConvertTo<Result, Source>(this Source source, Result defaultValue = default!)
     {
-        if (source == null || DBNull.Value.Equals(source))
+        if (object.Equals(source, default(Source)) || DBNull.Value.Equals(source))
         {
             return defaultValue;
         }
@@ -47,7 +47,7 @@ public static class Extensions
         try
         {
             Type type = typeof(Result);
-            return (Result)Convert.ChangeType(source, Nullable.GetUnderlyingType(type) ?? type);
+            return (Result)Convert.ChangeType(source, Nullable.GetUnderlyingType(type) ?? type)!;
         }
         catch
         {

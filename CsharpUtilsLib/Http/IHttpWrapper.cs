@@ -44,27 +44,27 @@ public interface IHttpWrapper : IDisposable
 
     Task<HtmlString> HtmlDELETE(string Url, bool lowerCaseKeepAlive = false);
 
+    Task<string> GET(string Url, bool lowerCaseKeepAlive = false);
+
     Task<T> GET<T>(string Url, bool lowerCaseKeepAlive = false) where T : class;
+
+    Task<string> POST(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false);
+
+    Task<string> POST(string Url, string rawPostData = null!, bool lowerCaseKeepAlive = false);
 
     Task<T> POST<T>(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false) where T : class;
 
     Task<T> POST<T>(string Url, string rawPostData = null!, bool lowerCaseKeepAlive = false) where T : class;
+
+    Task<string> PUT(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false);
+
+    Task<string> PUT(string Url, string rawPostData = null!, bool lowerCaseKeepAlive = false);
 
     Task<T> PUT<T>(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false) where T : class;
 
     Task<T> PUT<T>(string Url, string rawPostData = null!, bool lowerCaseKeepAlive = false) where T : class;
 
     Task<T> DELETE<T>(string Url, bool lowerCaseKeepAlive = false) where T : class;
-
-    Task<string> GET(string Url, bool lowerCaseKeepAlive = false);
-
-    Task<string> POST(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false);
-
-    Task<string> POST(string Url, string rawPostData = null!, bool lowerCaseKeepAlive = false);
-
-    Task<string> PUT(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false);
-
-    Task<string> PUT(string Url, string rawPostData = null!, bool lowerCaseKeepAlive = false);
 
     Task<string> DELETE(string Url, bool lowerCaseKeepAlive = false);
 

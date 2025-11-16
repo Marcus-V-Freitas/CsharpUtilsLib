@@ -36,7 +36,7 @@ public static class XML
         doc?.ParentNode?.RemoveChild(element);
     }
 
-    public static XmlElement ToXmlElement<T>(this T obj, string elementName, string namespaceURI = null!)
+    public static XmlElement ToXmlElement<T>(this T obj, string namespaceURI = null!)
     {
         var serializer = new XmlSerializer(typeof(T), namespaceURI);
         var doc = new XmlDocument();
@@ -51,28 +51,22 @@ public static class XML
     public static T ToObject<T>(this XmlElement element)
     {
         var serializer = new XmlSerializer(typeof(T), element.NamespaceURI);
-        using (var reader = new XmlNodeReader(element))
-        {
-            return (T)serializer.Deserialize(reader)!;
-        }
+        using var reader = new XmlNodeReader(element);
+        return (T)serializer.Deserialize(reader)!;
     }
 
     public static string SerializeObjectToXml<T>(T obj)
     {
-        XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
-        using (StringWriter textWriter = new StringWriter())
-        {
-            xmlSerializer.Serialize(textWriter, obj);
-            return textWriter.ToString();
-        }
+        XmlSerializer xmlSerializer = new(typeof(T));
+        using StringWriter textWriter = new();
+        xmlSerializer.Serialize(textWriter, obj);
+        return textWriter.ToString();
     }
 
     public static T DeserializeXmlToObject<T>(string xml)
     {
-        XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
-        using (StringReader textReader = new StringReader(xml))
-        {
-            return (T)xmlSerializer.Deserialize(textReader)!;
-        }
+        XmlSerializer xmlSerializer = new(typeof(T));
+        using StringReader textReader = new(xml);
+        return (T)xmlSerializer.Deserialize(textReader)!;
     }
 }

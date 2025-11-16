@@ -6,8 +6,6 @@ public sealed class HttpWrapper : IHttpWrapper
     private readonly bool _allowAutoRedirect;
     private readonly CookieContainer _cookiesContainer = new();
     private HttpClientHandler _httpClientHandler;
-    private Dictionary<string, string> _headers = new();
-    private List<KeyValuePair<string, string>> _cookies = new();
     private Encoding _encoding = Encoding.Default;
     private IWebProxy _proxy = null!;
 
@@ -33,7 +31,7 @@ public sealed class HttpWrapper : IHttpWrapper
 
     public string ContentType { get; set; } = _defaultContentType;
     public bool KeepAlive { get; set; }
-    public int TimeoutSeconds { get; set; } = 30;
+    public int TimeoutSeconds { get; set; }
     public HttpStatusCode StatusCode { get; private set; }
     public string ReasonPhrase { get; private set; } = null!;
     public string RequestUri { get; private set; } = null!;
@@ -42,8 +40,8 @@ public sealed class HttpWrapper : IHttpWrapper
     public Exception ErrorException { get; private set; } = null!;
     public long? ContentLength { get; private set; } = null!;
     public string Version { get; private set; } = null!;
-    public Dictionary<string, string> Headers { get => _headers; set => _headers = value; }
-    public List<KeyValuePair<string, string>> Cookies { get => _cookies; set => _cookies = value; }
+    public Dictionary<string, string> Headers { get; set; } = [];
+    public List<KeyValuePair<string, string>> Cookies { get; set; } = [];
     public HttpResponseHeaders ResponseHeaders { get; private set; }
     public List<Cookie> ResponseCookies { get; private set; }
 
@@ -106,10 +104,28 @@ public sealed class HttpWrapper : IHttpWrapper
         return SecureHtmlStringReturn(htmlResponse);
     }
 
+    public async Task<string> GET(string Url, bool lowerCaseKeepAlive = false)
+    {
+        var (content, _) = await SendRequest(HttpMethod.Get, Url, postData: null!, lowerCaseKeepAlive);
+        return content;
+    }
+
     public async Task<T> GET<T>(string Url, bool lowerCaseKeepAlive = false) where T : class
     {
         string jsonResponse = await GET(Url, lowerCaseKeepAlive);
         return SecureJsonObjectReturn<T>(jsonResponse);
+    }
+
+    public async Task<string> POST(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false)
+    {
+        var (content, _) = await SendRequest(HttpMethod.Post, Url, postData, lowerCaseKeepAlive);
+        return content;
+    }
+
+    public async Task<string> POST(string Url, string rawPostData = null!, bool lowerCaseKeepAlive = false)
+    {
+        StringContent content = CreateContentByRawPostData(rawPostData);
+        return await POST(Url, content, lowerCaseKeepAlive);
     }
 
     public async Task<T> POST<T>(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false) where T : class
@@ -130,36 +146,6 @@ public sealed class HttpWrapper : IHttpWrapper
         return SecureJsonObjectReturn<T>(jsonResponse);
     }
 
-    public async Task<T> PUT<T>(string Url, string rawPostData = null!, bool lowerCaseKeepAlive = false) where T : class
-    {
-        StringContent content = CreateContentByRawPostData(rawPostData);
-        return await PUT<T>(Url, content, lowerCaseKeepAlive);
-    }
-
-    public async Task<T> DELETE<T>(string Url, bool lowerCaseKeepAlive = false) where T : class
-    {
-        string jsonResponse = await DELETE(Url, lowerCaseKeepAlive);
-        return SecureJsonObjectReturn<T>(jsonResponse);
-    }
-
-    public async Task<string> GET(string Url, bool lowerCaseKeepAlive = false)
-    {
-        var (content, _) = await SendRequest(HttpMethod.Get, Url, postData: null!, lowerCaseKeepAlive);
-        return content;
-    }
-
-    public async Task<string> POST(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false)
-    {
-        var (content, _) = await SendRequest(HttpMethod.Post, Url, postData, lowerCaseKeepAlive);
-        return content;
-    }
-
-    public async Task<string> POST(string Url, string rawPostData = null!, bool lowerCaseKeepAlive = false)
-    {
-        StringContent content = CreateContentByRawPostData(rawPostData);
-        return await POST(Url, content, lowerCaseKeepAlive);
-    }
-
     public async Task<string> PUT(string Url, HttpContent postData = null!, bool lowerCaseKeepAlive = false)
     {
         var (content, _) = await SendRequest(HttpMethod.Put, Url, postData, lowerCaseKeepAlive);
@@ -171,6 +157,18 @@ public sealed class HttpWrapper : IHttpWrapper
         StringContent content = CreateContentByRawPostData(rawPostData);
         return await PUT(Url, content, lowerCaseKeepAlive);
     }
+
+    public async Task<T> PUT<T>(string Url, string rawPostData = null!, bool lowerCaseKeepAlive = false) where T : class
+    {
+        StringContent content = CreateContentByRawPostData(rawPostData);
+        return await PUT<T>(Url, content, lowerCaseKeepAlive);
+    }
+
+    public async Task<T> DELETE<T>(string Url, bool lowerCaseKeepAlive = false) where T : class
+    {
+        string jsonResponse = await DELETE(Url, lowerCaseKeepAlive);
+        return SecureJsonObjectReturn<T>(jsonResponse);
+    }       
 
     public async Task<string> DELETE(string Url, bool lowerCaseKeepAlive = false)
     {
@@ -255,18 +253,18 @@ public sealed class HttpWrapper : IHttpWrapper
 
     private string GetHeaderValue(string key)
     {
-        return _headers.ContainsKey(key) ? _headers[key] : null!;
+        return Headers.TryGetValue(key, out string? value) ? value : null!;
     }
 
     private void SetHeaderValue(string key, string value)
     {
         if (value == null)
         {
-            _headers.Remove(key);
+            Headers.Remove(key);
             return;
         }
 
-        _headers[key] = value!;
+        Headers[key] = value!;
     }
 
     private static void AddOrUpdateHeader(HttpClient http, string key, string value)
@@ -304,38 +302,32 @@ public sealed class HttpWrapper : IHttpWrapper
                                                            HttpContent postData,
                                                            bool lowerCaseKeepAlive)
     {
-        using (CancellationTokenSource cancelToken = new(TimeSpan.FromSeconds(TimeoutSeconds)))
+        using CancellationTokenSource cancelToken = new(TimeSpan.FromSeconds(TimeoutSeconds));
+        try
         {
-            try
+            using HttpClient http = new(_httpClientHandler, disposeHandler: false)
             {
-                using (HttpClient http = new(_httpClientHandler, disposeHandler: false)
-                {
-                    Timeout = TimeSpan.FromSeconds(TimeoutSeconds)
-                })
-                {
-                    using (HttpRequestMessage request = new(method, Url)
-                    {
-                        Content = postData
-                    })
-                    {
-                        FillContentType(postData);
-                        AddCookies(request);
-                        AddHeaders(http, lowerCaseKeepAlive);
+                Timeout = TimeSpan.FromSeconds(TimeoutSeconds)
+            };
+            using HttpRequestMessage request = new(method, Url)
+            {
+                Content = postData
+            };
+            FillContentType(postData);
+            AddCookies(request);
+            AddHeaders(http, lowerCaseKeepAlive);
 
-                        return await http.SendAsync(request, cancelToken.Token);
-                    }
-                }
-            }
-            catch (TaskCanceledException ex)
-            {
-                ErrorMessage = $"[Timeout] - {ex.Message} - {ex.StackTrace}";
-                ErrorException = ex;
-            }
-            catch (Exception ex)
-            {
-                ErrorMessage = $"[Internal Error] - {ex.Message} - {ex.StackTrace}";
-                ErrorException = ex;
-            }
+            return await http.SendAsync(request, cancelToken.Token);
+        }
+        catch (TaskCanceledException ex)
+        {
+            ErrorMessage = $"[Timeout] - {ex.Message} - {ex.StackTrace}";
+            ErrorException = ex;
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"[Internal Error] - {ex.Message} - {ex.StackTrace}";
+            ErrorException = ex;
         }
         return null!;
     }
@@ -344,12 +336,12 @@ public sealed class HttpWrapper : IHttpWrapper
     {
         AddKeepAlive(http, lowerCaseKeepAlive);
 
-        if (_headers.ListIsNullOrEmpty())
+        if (Headers.ListIsNullOrEmpty())
         {
             return;
         }
 
-        foreach (KeyValuePair<string, string> header in _headers)
+        foreach (KeyValuePair<string, string> header in Headers)
         {
             AddOrUpdateHeader(http, header.Key, header.Value);
         }
@@ -359,9 +351,9 @@ public sealed class HttpWrapper : IHttpWrapper
     {
         StringBuilder sb = new();
 
-        if (!_cookies.ListIsNullOrEmpty())
+        if (!Cookies.ListIsNullOrEmpty())
         {
-            foreach (KeyValuePair<string, string> cookie in _cookies)
+            foreach (KeyValuePair<string, string> cookie in Cookies)
             {
                 if (!cookie.KeyValueIsNullOrEmpty())
                 {
@@ -395,33 +387,31 @@ public sealed class HttpWrapper : IHttpWrapper
                                                                     HttpContent postData,
                                                                     bool lowerCaseKeepAlive)
     {
-        using (HttpResponseMessage response = await ReponseMessage(method, Url, postData, lowerCaseKeepAlive))
+        using HttpResponseMessage response = await ReponseMessage(method, Url, postData, lowerCaseKeepAlive);
+        if (response == null)
+            return (null, null)!;
+
+        byte[] bytes = await response?.Content?.ReadAsByteArrayAsync()!;
+        string content = await response?.Content?.ReadAsStringAsync()!;
+        RequestUri = response.RequestMessage?.RequestUri?.ToString()!;
+        StatusCode = response.StatusCode;
+        ReasonPhrase = response.ReasonPhrase!;
+        ResponseHeaders = response.Headers;
+        ContentLength = bytes?.LongLength;
+        Version = response?.Version?.ToString()!;
+        ResponseCookies = _cookiesContainer?.GetCookies(Url)!;
+
+        await Task.Delay(3000);
+
+        if (response!.IsSuccessStatusCode)
         {
-            if (response == null)
-                return (null, null)!;
-
-            byte[] bytes = await response?.Content?.ReadAsByteArrayAsync()!;
-            string content = await response?.Content?.ReadAsStringAsync()!;
-            RequestUri = response.RequestMessage?.RequestUri?.ToString()!;
-            StatusCode = response.StatusCode;
-            ReasonPhrase = response.ReasonPhrase!;
-            ResponseHeaders = response.Headers;
-            ContentLength = bytes?.LongLength;
-            Version = response?.Version?.ToString()!;
-            ResponseCookies = _cookiesContainer?.GetCookies(Url)!;
-
-            await Task.Delay(3000);
-
-            if (response.IsSuccessStatusCode)
-            {
-                ErrorMessage = string.Empty;
-                return (content, bytes)!;
-            }
-            else
-            {
-                ErrorMessage = content;
-                return (null, null)!;
-            }
+            ErrorMessage = string.Empty;
+            return (content, bytes)!;
+        }
+        else
+        {
+            ErrorMessage = content;
+            return (null, null)!;
         }
     }
 

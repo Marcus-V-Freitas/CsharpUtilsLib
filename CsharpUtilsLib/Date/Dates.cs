@@ -66,8 +66,8 @@ public static class Dates
 
     public static IEnumerable<DateTime> GetAllYearDates(int year)
     {
-        List<DateTime> dates = new();
-        var currentDate = new DateTime(year, 1, 1);
+        List<DateTime> dates = [];
+        var currentDate = new DateTime(year, 1, 1, 0, 0, 0, DateTimeKind.Unspecified);
 
         while (currentDate.Year == year)
         {
@@ -94,14 +94,9 @@ public static class Dates
         return date.AddDays(delta);
     }
 
-    public static DateTime LastDayOfMonth(this DateTime date)
-    {
-        return new DateTime(date.Year, date.Month, DateTime.DaysInMonth(date.Year, date.Month));
-    }
-
     public static DateTime LastDayOfMonth(int year, int month)
     {
-        return new DateTime(year, month, DateTime.DaysInMonth(year, month));
+        return new DateTime(year, month, DateTime.DaysInMonth(year, month), 0, 0, 0, DateTimeKind.Unspecified);
     }
 
     public static int GetAge(this DateTime birthDate)
@@ -161,14 +156,12 @@ public static class Dates
         return DateTime.IsLeapYear(year);
     }
 
-    public static DateTime GetLastDayOfMonth(this DateTime date)
-    {
-        return new DateTime(date.Year, date.Month, DateTime.DaysInMonth(date.Year, date.Month));
-    }
+    public static DateTime GetLastDayOfMonth(this DateTime date) => 
+        new(date.Year, date.Month, DateTime.DaysInMonth(date.Year, date.Month), 0, 0, 0, DateTimeKind.Unspecified);
 
     public static List<DateTime> GenerateDateRange(this DateTime startDate, DateTime endDate)
     {
-        List<DateTime> dates = new List<DateTime>();
+        List<DateTime> dates = [];
         for (DateTime date = startDate; date <= endDate; date = date.AddDays(1))
         {
             dates.Add(date);
